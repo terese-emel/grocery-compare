@@ -1,29 +1,107 @@
-### Get all products
-GET http://localhost:3000/products
+@baseUrl = http://localhost:3000
 
-### Get one product
-GET http://localhost:3000/products/2
+# After creating a product, copy its _id here
+@productId = 6ac4f8450eb7a34617a3f9a2
 
-### Filter products
-GET http://localhost:3000/products?shop=Willys
 
-### Create
-POST http://localhost:3000/products
+###############################################
+# GET ALL PRODUCTS
+###############################################
+
+GET {{baseUrl}}/products
+
+###
+
+###############################################
+# CREATE PRODUCT
+###############################################
+
+POST {{baseUrl}}/products
 Content-Type: application/json
 
 {
-  "name": "Eggs 12 pack",
-  "shop": "Willys",
-  "price": 34.9
+  "name": "Eggs 12-pack",
+  "shop": "Coop",
+  "price": 17.9
 }
+###
 
-### Update
-PATCH http://localhost:3000/products/2
+###############################################
+# GET ALL PRODUCTS
+###############################################
+
+GET {{baseUrl}}/products
+
+###
+###
+
+###############################################
+# GET ONE PRODUCT
+###############################################
+
+GET {{baseUrl}}/products/{{productId}}
+
+### 1. Valid ID + existing product
+GET {{baseUrl}}/products/{{productId}}
+
+###
+
+### 2. Invalid MongoDB ID
+GET {{baseUrl}}/products/hello
+
+###
+
+### 3. Valid MongoDB ID, but product doesn't exist
+GET {{baseUrl}}/products/000000000000000000000000
+###
+
+###############################################
+# PATCH PRODUCT
+###############################################
+
+PATCH {{baseUrl}}/products/{{productId}}
 Content-Type: application/json
 
 {
-  "price": 24.9
+  "price": 20.9
 }
 
-### Delete
-DELETE http://localhost:3000/products/2
+###
+
+###############################################
+# GET PRODUCT AFTER UPDATE
+###############################################
+
+GET {{baseUrl}}/products/{{productId}}
+
+###
+
+###############################################
+# DELETE PRODUCT
+###############################################
+
+DELETE {{baseUrl}}/products/{{productId}}
+
+###
+
+###############################################
+# FILTER BY SHOP
+###############################################
+
+GET {{baseUrl}}/products?shop=Hemköp
+
+###
+
+###############################################
+# FILTER BY NAME
+###############################################
+
+GET {{baseUrl}}/products?name=milk
+
+###
+
+###############################################
+# FILTER BY NAME + SHOP
+###############################################
+
+GET {{baseUrl}}/products?name=milk&shop=Coop
