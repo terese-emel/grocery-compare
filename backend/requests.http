@@ -1,0 +1,29 @@
+### Get all products
+GET http://localhost:3000/products
+
+### Get one product
+GET http://localhost:3000/products/2
+
+### Filter products
+GET http://localhost:3000/products?shop=Willys
+
+### Create
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+  "name": "Eggs 12 pack",
+  "shop": "Willys",
+  "price": 34.9
+}
+
+### Update
+PATCH http://localhost:3000/products/2
+Content-Type: application/json
+
+{
+  "price": 24.9
+}
+
+### Delete
+DELETE http://localhost:3000/products/2
