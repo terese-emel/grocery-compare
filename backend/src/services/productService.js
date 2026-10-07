@@ -37,23 +37,17 @@ const patchProductPrice = async (productId, price) => {
 const getCheapestProduct = async (name) => {
   const products = await Product.find({
     name: { $regex: name, $options: "i" },
-  });
+  }).sort({ price: 1 });
 
   if (products.length === 0) {
     return null;
   }
 
   let cheapestPrice = products[0].price;
-  let cheapestProducts = [];
 
-  for (const product of products) {
-    if (product.price < cheapestPrice) {
-      cheapestPrice = product.price;
-      cheapestProducts = [product];
-    } else if (product.price === cheapestPrice) {
-      cheapestProducts.push(product);
-    }
-  }
+  const cheapestProducts = products.filter(
+    (product) => product.price === cheapestPrice,
+  );
 
   return cheapestProducts;
 };
