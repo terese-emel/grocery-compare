@@ -9,9 +9,11 @@ const {
   updateProduct,
   deleteProduct,
   patchProductPrice,
+  cheapestProduct,
 } = require("../controllers/productController");
 
 router.get("/products", getProducts);
+router.get("/products/cheapest", cheapestProduct);
 router.get("/products/:id", getProductById);
 router.post("/products", createProduct);
 router.put("/products/:id", updateProduct);

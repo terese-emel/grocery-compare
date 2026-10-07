@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000
 
 # After creating a product, copy its _id here
-@productId = 6ac4f8450eb7a34617a3f9a2
+@productId = 6ac634a918570379d9d380b4
 
 
 ###############################################
@@ -20,9 +20,9 @@ POST {{baseUrl}}/products
 Content-Type: application/json
 
 {
-  "name": "Eggs 12-pack",
-  "shop": "Coop",
-  "price": 17.9
+  "name": "Arla Milk 1L",
+  "shop": "willys",
+  "price": 11.9
 }
 ###
 
@@ -105,3 +105,13 @@ GET {{baseUrl}}/products?name=milk
 ###############################################
 
 GET {{baseUrl}}/products?name=milk&shop=Coop
+
+###
+
+###############################################
+# FILTER BY NAME 
+###############################################
+
+GET {{baseUrl}}/products/cheapest?name=milk
+
+###

@@ -133,6 +133,25 @@ const patchProductPrice = async (ctx) => {
   };
 };
 
+const cheapestProduct = async (ctx) => {
+  const name = ctx.query.name;
+  if (!name) {
+    ctx.status = 400;
+    ctx.body = { message: "Product name is required" };
+    return;
+  }
+  const product = await productService.getCheapestProduct(name);
+
+  if (!product) {
+    ctx.status = 404;
+    ctx.body = { message: "No products found" };
+    return;
+  }
+
+  ctx.status = 200;
+  ctx.body = product;
+};
+
 module.exports = {
   getProducts,
   getProductById,
@@ -140,4 +159,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   patchProductPrice,
+  cheapestProduct,
 };
