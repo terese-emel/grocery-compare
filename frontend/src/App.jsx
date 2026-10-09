@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import SearchForm from "./components/SearchForm";
 import ProductList from "./components/ProductList";
-import { searchProducts } from "./services/productApi";
+import {
+  searchProducts,
+  deleteProduct,
+  updateProduct,
+} from "./services/productApi";
 import ErrorMessage from "./components/ErrorMessage";
 import AddProductForm from "./components/AddProductForm";
 
@@ -57,6 +61,32 @@ function App() {
     setError("");
   };
 
+  async function handleDelete(id) {
+    try {
+      await deleteProduct(id);
+
+      setProducts((currentProducts) =>
+        currentProducts.filter((product) => product._id !== id),
+      );
+    } catch (requestError) {
+      setError(requestError.message);
+    }
+  }
+
+  const handleUpdate = async (id, newPrice) => {
+    try {
+      const data = await updateProduct(id, { price: newPrice });
+
+      setProducts((currentProducts) =>
+        currentProducts.map((product) =>
+          product._id === id ? data.product : product,
+        ),
+      );
+    } catch (requestError) {
+      setError(requestError.message);
+    }
+  };
+
   return (
     <main>
       <h1>Grocery Compare</h1>
@@ -72,7 +102,11 @@ function App() {
 
       <ErrorMessage message={error} />
 
-      <ProductList products={products} />
+      <ProductList
+        products={products}
+        onDelete={handleDelete}
+        onUpdate={handleUpdate}
+      />
       <AddProductForm />
     </main>
   );

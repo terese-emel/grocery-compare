@@ -22,7 +22,8 @@ Content-Type: application/json
 {
   "name": "Arla Milk 1L",
   "shop": "Coop",
-  "price": 10.9
+  "price": 10.9,
+  "unit": "1L"
 }
 ###
 

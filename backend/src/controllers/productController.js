@@ -14,7 +14,6 @@ const getProducts = async (ctx) => {
   ctx.status = 200;
   ctx.body = products;
 };
-  
 
 const getProductById = async (ctx) => {
   const productId = ctx.params.id;
@@ -38,9 +37,9 @@ const getProductById = async (ctx) => {
 };
 
 const createProduct = async (ctx) => {
-  const { name, shop, price } = ctx.request.body;
+  const { name, shop, price, unit } = ctx.request.body;
 
-  if (!name || !shop || price === undefined) {
+  if (!name || !shop || price === undefined || !unit) {
     ctx.status = 400;
     ctx.body = { message: "Missing required fields" };
     return;
@@ -50,6 +49,7 @@ const createProduct = async (ctx) => {
     name,
     shop,
     price,
+    unit,
   };
   const product = await productService.createProduct(newProduct);
 

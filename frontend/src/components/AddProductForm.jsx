@@ -5,6 +5,7 @@ const AddProductForm = () => {
   const [productName, setProductName] = useState("");
   const [shopName, setShopName] = useState("");
   const [price, setPrice] = useState("");
+  const [unit, setUnit] = useState("");
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -12,6 +13,7 @@ const AddProductForm = () => {
     setProductName("");
     setShopName("");
     setPrice("");
+    setUnit("");
     setMessage("");
   };
 
@@ -23,7 +25,8 @@ const AddProductForm = () => {
     if (
       productName.trim() === "" ||
       shopName.trim() === "" ||
-      price.trim() === ""
+      price.trim() === "" ||
+      unit.trim() === ""
     ) {
       setMessage("Please fill in all fields.");
       return;
@@ -36,6 +39,7 @@ const AddProductForm = () => {
         name: productName,
         shop: shopName,
         price: parseFloat(price),
+        unit,
       };
 
       await createProduct(product);
@@ -82,6 +86,15 @@ const AddProductForm = () => {
           placeholder="Price"
           value={price}
           onChange={(event) => setPrice(event.target.value)}
+        />
+
+        <label htmlFor="unit">Unit</label>
+        <input
+          id="unit"
+          type="text"
+          placeholder="Unit"
+          value={unit}
+          onChange={(event) => setUnit(event.target.value)}
         />
 
         <button type="submit" disabled={saving}>
