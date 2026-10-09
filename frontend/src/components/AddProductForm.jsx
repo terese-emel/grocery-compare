@@ -39,7 +39,7 @@ const AddProductForm = () => {
         name: productName,
         shop: shopName,
         price: parseFloat(price),
-        unit,
+        unit: unit,
       };
 
       await createProduct(product);
@@ -48,6 +48,7 @@ const AddProductForm = () => {
       setProductName("");
       setShopName("");
       setPrice("");
+      setUnit("");
     } catch (error) {
       setMessage(error.message);
     } finally {

@@ -5,15 +5,22 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --env-file=.env --watch src/index.js",
-    "start": "node --env-file=.env src/index.js"
+    "start": "node --env-file=.env src/index.js",
+    "test": "jest --runInBand",
+    "test:integration": "jest tests/integration --runInBand"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.4.3",
+    "supertest": "^7.1.4"
+  },
   "dependencies": {
-    "@koa/router": "^15.7.0",
     "@koa/cors": "^5.0.0",
+    "@koa/router": "^15.7.0",
     "koa": "^3.2.1",
     "koa-bodyparser": "^4.4.1",
     "mongoose": "^9.11.0"

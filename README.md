@@ -125,6 +125,24 @@ Open the frontend at `http://localhost:5173`. The API runs at `http://localhost:
 
 To test the API in VS Code, open `backend/requests.http` with the REST Client extension.
 
+Run backend tests:
+
+```bash
+cd backend
+npm test
+```
+
+The tests use Jest and Supertest and run without connecting to the real MongoDB database.
+
+Run integration tests:
+
+```bash
+cd backend
+npm run test:integration
+```
+
+Integration tests use a temporary in-memory MongoDB instance and do not modify your real database.
+
 ## Learning path
 
 The project is being developed step by step:
