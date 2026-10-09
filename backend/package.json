@@ -23,6 +23,6 @@
     "@koa/router": "^15.7.0",
     "koa": "^3.2.1",
     "koa-bodyparser": "^4.4.1",
-    "mongoose": "^9.11.0"
+    "mongoose": "^8.24.5"
   }
 }

@@ -4,20 +4,31 @@ const { MongoMemoryServer } = require("mongodb-memory-server");
 const app = require("../../src/app");
 const Product = require("../../src/models/Product");
 
+jest.setTimeout(120000);
+
 let mongoServer;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
+  mongoServer = await MongoMemoryServer.create({
+    binary: { version: "7.0.14" },
+  });
   await mongoose.connect(mongoServer.getUri());
-}, 30000);
+}, 120000);
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
-}, 30000);
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.disconnect();
+  }
+
+  if (mongoServer) {
+    await mongoServer.stop();
+  }
+}, 120000);
 
 afterEach(async () => {
-  await Product.deleteMany({});
+  if (mongoose.connection.readyState === 1) {
+    await Product.deleteMany({});
+  }
 });
 
 describe("Product API integration", () => {

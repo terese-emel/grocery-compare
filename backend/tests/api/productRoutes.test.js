@@ -1,8 +1,8 @@
 const request = require("supertest");
-const app = require("../src/app");
-const productService = require("../src/services/productService");
+const app = require("../../src/app");
+const productService = require("../../src/services/productService");
 
-jest.mock("../src/services/productService");
+jest.mock("../../src/services/productService");
 
 describe("Product API", () => {
   beforeEach(() => {
@@ -64,7 +64,9 @@ describe("Product API", () => {
     };
     productService.createProduct.mockResolvedValue({ _id: "1", ...product });
 
-    const response = await request(app.callback()).post("/products").send(product);
+    const response = await request(app.callback())
+      .post("/products")
+      .send(product);
 
     expect(response.status).toBe(201);
     expect(response.body.product).toMatchObject(product);
