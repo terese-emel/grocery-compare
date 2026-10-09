@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --env-file=.env --watch src/index.js",
     "start": "node --env-file=.env src/index.js",
-    "test": "jest --runInBand",
+    "test:unit": "jest tests/unit --runInBand",
+    "test:api": "jest tests/api --runInBand",
     "test:integration": "jest tests/integration --runInBand"
   },
   "keywords": [],
