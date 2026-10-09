@@ -8,7 +8,9 @@ Grocery Compare is a full-stack learning project for comparing grocery prices ac
 - Sort matching products by price
 - Find the cheapest product, including ties
 - Create, update, and delete products through the API
+- Validate required product fields and non-negative prices
 - React frontend with loading and error states
+- React controls for adding, editing, and deleting products
 - MongoDB persistence through Mongoose
 
 ## Architecture
@@ -46,7 +48,8 @@ Example product:
 {
   "name": "Arla Milk 1L",
   "shop": "ICA",
-  "price": 10.9
+  "price": 10.9,
+  "unit": "1L"
 }
 ```
 
@@ -62,6 +65,10 @@ grocery-compare/
 │   │   ├── routes/
 │   │   ├── services/
 │   │   └── index.js
+│   ├── tests/
+│   │   ├── unit/          # service tests with mocked models
+│   │   ├── api/           # HTTP tests with mocked services
+│   │   └── integration/   # HTTP tests with temporary MongoDB
 │   ├── .env             # local database name; never commit secrets
 │   ├── requests.http
 │   └── package.json
@@ -125,14 +132,22 @@ Open the frontend at `http://localhost:5173`. The API runs at `http://localhost:
 
 To test the API in VS Code, open `backend/requests.http` with the REST Client extension.
 
-Run backend tests:
+Run unit tests:
 
 ```bash
 cd backend
-npm test
+npm run test:unit
 ```
 
-The tests use Jest and Supertest and run without connecting to the real MongoDB database.
+Unit tests test service logic without HTTP or MongoDB.
+
+Run API tests:
+
+```bash
+npm run test:api
+```
+
+API tests exercise Koa routes and controllers with mocked services.
 
 Run integration tests:
 
