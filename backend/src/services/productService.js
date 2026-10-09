@@ -1,7 +1,11 @@
 const Product = require("../models/Product");
 
-const getProducts = async () => {
-  return await Product.find();
+const getProducts = async (name) => {
+  const filter = name
+    ? { name: { $regex: name, $options: "i" } }
+    : {};
+
+  return await Product.find(filter).sort({ price: 1 });
 };
 
 const getProductById = async (productId) => {

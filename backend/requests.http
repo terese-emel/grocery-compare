@@ -21,8 +21,8 @@ Content-Type: application/json
 
 {
   "name": "Arla Milk 1L",
-  "shop": "willys",
-  "price": 11.9
+  "shop": "Coop",
+  "price": 10.9
 }
 ###
 
@@ -115,3 +115,6 @@ GET {{baseUrl}}/products?name=milk&shop=Coop
 GET {{baseUrl}}/products/cheapest?name=milk
 
 ###
+
+
+GET http://localhost:3000/products?name=milk

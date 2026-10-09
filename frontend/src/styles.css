@@ -1,0 +1,102 @@
+.error-message {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 6px;
+  color: #8b1e1e;
+  background-color: #ffe5e5;
+}
+
+:root {
+  font-family: Arial, sans-serif;
+  color: #17221b;
+  background-color: #f2f7f2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  color: #206b38;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 1;
+}
+
+main > p {
+  color: #68736b;
+  font-size: 1.1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 420px;
+  margin-top: 40px;
+}
+
+label {
+  font-weight: 700;
+}
+
+input,
+button {
+  padding: 12px;
+  font: inherit;
+  border-radius: 6px;
+}
+
+input {
+  border: 1px solid #b8c5b9;
+}
+
+button {
+  color: white;
+  background-color: #206b38;
+  border: 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+section {
+  margin-top: 32px;
+}
+
+.product-card {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin: 10px 0;
+  padding: 14px;
+  border: 1px solid #d5dfd6;
+  border-radius: 8px;
+  background: white;
+}
+
+.product-card strong {
+  margin-left: auto;
+}
+
+.cheapest {
+  color: white;
+  background-color: #70c58d;
+}

@@ -2,10 +2,19 @@ const mongoose = require("mongoose");
 const productService = require("../services/productService");
 
 const getProducts = async (ctx) => {
-  const products = await productService.getProducts();
+  const name = ctx.query.name;
+
+  if (!name) {
+    ctx.status = 400;
+    ctx.body = { message: "Product name is required" };
+    return;
+  }
+
+  const products = await productService.getProducts(name);
   ctx.status = 200;
   ctx.body = products;
 };
+  
 
 const getProductById = async (ctx) => {
   const productId = ctx.params.id;
