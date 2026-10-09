@@ -1,4 +1,10 @@
-const SearchForm = ({ productName, setProductName, handleSubmit, loading }) => {
+const SearchForm = ({
+  productName,
+  setProductName,
+  handleSubmit,
+  loading,
+  clearSearch,
+}) => {
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="product">Product name</label>
@@ -13,6 +19,9 @@ const SearchForm = ({ productName, setProductName, handleSubmit, loading }) => {
 
       <button type="submit" disabled={loading}>
         {loading ? "Searching..." : "Search"}
+      </button>
+      <button type="button" onClick={clearSearch} disabled={loading}>
+        Clear
       </button>
     </form>
   );

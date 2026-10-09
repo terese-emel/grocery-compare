@@ -3,6 +3,7 @@ import SearchForm from "./components/SearchForm";
 import ProductList from "./components/ProductList";
 import { searchProducts } from "./services/productApi";
 import ErrorMessage from "./components/ErrorMessage";
+import AddProductForm from "./components/AddProductForm";
 
 function App() {
   const [productName, setProductName] = useState("");
@@ -50,6 +51,12 @@ function App() {
     }
   }
 
+  const clearSearch = () => {
+    setProductName("");
+    setProducts([]);
+    setError("");
+  };
+
   return (
     <main>
       <h1>Grocery Compare</h1>
@@ -60,11 +67,13 @@ function App() {
         setProductName={setProductName}
         handleSubmit={handleSubmit}
         loading={loading}
+        clearSearch={clearSearch}
       />
 
       <ErrorMessage message={error} />
 
       <ProductList products={products} />
+      <AddProductForm />
     </main>
   );
 }
