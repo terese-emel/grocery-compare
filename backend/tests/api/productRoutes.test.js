@@ -51,7 +51,7 @@ describe("Product API", () => {
       .send({ name: "Milk", shop: "ICA", price: 10.9 });
 
     expect(response.status).toBe(400);
-    expect(response.body).toEqual({ message: "Missing required fields" });
+    expect(response.body).toEqual({ message: "Invalid product data" });
     expect(productService.createProduct).not.toHaveBeenCalled();
   });
 
@@ -71,5 +71,49 @@ describe("Product API", () => {
     expect(response.status).toBe(201);
     expect(response.body.product).toMatchObject(product);
     expect(productService.createProduct).toHaveBeenCalledWith(product);
+  });
+
+  test("POST /products rejects an invalid price", async () => {
+    const response = await request(app.callback()).post("/products").send({
+      name: "Milk",
+      shop: "ICA",
+      price: "not-a-number",
+      unit: "1L",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Invalid product data");
+  });
+
+  test("POST /products rejects a missing unit", async () => {
+    const response = await request(app.callback()).post("/products").send({
+      name: "Milk",
+      shop: "ICA",
+      price: 10.9,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Invalid product data");
+  });
+  test("POST /products rejects an empty name", async () => {
+    const response = await request(app.callback()).post("/products").send({
+      name: "",
+      shop: "ICA",
+      price: 10.9,
+      unit: "1L",
+    });
+
+    expect(response.status).toBe(400);
+  });
+  test("POST /products rejects an empty name", async () => {
+    const response = await request(app.callback()).post("/products").send({
+      name: "",
+      shop: "ICA",
+      price: 10.9,
+      unit: "1L",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Invalid product data");
   });
 });

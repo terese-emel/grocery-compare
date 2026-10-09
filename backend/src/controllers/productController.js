@@ -39,9 +39,16 @@ const getProductById = async (ctx) => {
 const createProduct = async (ctx) => {
   const { name, shop, price, unit } = ctx.request.body;
 
-  if (!name || !shop || price === undefined || !unit) {
+  if (
+    !name ||
+    !shop ||
+    !unit ||
+    price === undefined ||
+    !Number.isFinite(price) ||
+    price < 0
+  ) {
     ctx.status = 400;
-    ctx.body = { message: "Missing required fields" };
+    ctx.body = { message: "Invalid product data" };
     return;
   }
 
