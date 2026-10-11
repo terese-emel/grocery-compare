@@ -42,7 +42,18 @@ async function login(ctx) {
   ctx.body = result;
 }
 
+async function getCurrentUser(ctx) {
+  ctx.status = 200;
+  ctx.body = {
+    user: {
+      id: ctx.state.user.userId,
+      email: ctx.state.user.email,
+    },
+  };
+}
+
 module.exports = {
   register,
   login,
+  getCurrentUser,
 };
