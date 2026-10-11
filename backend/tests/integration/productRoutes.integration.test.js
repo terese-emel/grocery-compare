@@ -1,5 +1,8 @@
+process.env.JWT_SECRET = "test-secret";
+
 const mongoose = require("mongoose");
 const request = require("supertest");
+const jwt = require("jsonwebtoken");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const app = require("../../src/app");
 const Product = require("../../src/models/Product");
@@ -7,6 +10,11 @@ const Product = require("../../src/models/Product");
 jest.setTimeout(120000);
 
 let mongoServer;
+const ownerId = new mongoose.Types.ObjectId();
+const authToken = jwt.sign(
+  { userId: ownerId.toString(), email: "test@example.com" },
+  process.env.JWT_SECRET,
+);
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create({
@@ -52,6 +60,7 @@ describe("Product API integration", () => {
 
     const response = await request(app.callback())
       .post("/products")
+      .set("Authorization", `Bearer ${authToken}`)
       .send(product);
 
     expect(response.status).toBe(201);
@@ -72,16 +81,20 @@ describe("Product API integration", () => {
         shop: "ICA",
         price: 10.9,
         unit: "1L",
+        owner: ownerId,
       },
       {
         name: "Milk",
         shop: "Coop",
         price: 12.5,
         unit: "1L",
+        owner: ownerId,
       },
     ]);
 
-    const response = await request(app.callback()).get("/products?name=milk");
+    const response = await request(app.callback())
+      .get("/products?name=milk")
+      .set("Authorization", `Bearer ${authToken}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(2);

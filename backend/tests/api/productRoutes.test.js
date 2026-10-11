@@ -1,10 +1,29 @@
+process.env.JWT_SECRET = "test-secret";
+
 const request = require("supertest");
 const app = require("../../src/app");
 const productService = require("../../src/services/productService");
+const jwt = require("jsonwebtoken");
 
 jest.mock("../../src/services/productService");
 
 describe("Product API", () => {
+  const authToken = jwt.sign(
+    { userId: "507f1f77bcf86cd799439011", email: "test@example.com" },
+    process.env.JWT_SECRET,
+  );
+
+  const authenticatedRequest = {
+    get: (path) =>
+      request(app.callback())
+        .get(path)
+        .set("Authorization", `Bearer ${authToken}`),
+    post: (path) =>
+      request(app.callback())
+        .post(path)
+        .set("Authorization", `Bearer ${authToken}`),
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -21,7 +40,7 @@ describe("Product API", () => {
       { _id: "1", name: "Milk", shop: "ICA", price: 10.9, unit: "1L" },
     ]);
 
-    const response = await request(app.callback()).get("/products?name=milk");
+    const response = await authenticatedRequest.get("/products?name=milk");
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1);
@@ -31,7 +50,7 @@ describe("Product API", () => {
   test("GET /products returns all products when no name is provided", async () => {
     productService.getProducts.mockResolvedValue([]);
 
-    const response = await request(app.callback()).get("/products");
+    const response = await authenticatedRequest.get("/products");
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual([]);
@@ -44,7 +63,7 @@ describe("Product API", () => {
       { name: "Milk", shop: "Coop", price: 10.9 },
     ]);
 
-    const response = await request(app.callback()).get(
+    const response = await authenticatedRequest.get(
       "/products/cheapest?name=milk",
     );
 
@@ -54,7 +73,7 @@ describe("Product API", () => {
   });
 
   test("POST /products rejects incomplete data", async () => {
-    const response = await request(app.callback())
+    const response = await authenticatedRequest
       .post("/products")
       .send({ name: "Milk", shop: "ICA", price: 10.9 });
 
@@ -72,17 +91,20 @@ describe("Product API", () => {
     };
     productService.createProduct.mockResolvedValue({ _id: "1", ...product });
 
-    const response = await request(app.callback())
+    const response = await authenticatedRequest
       .post("/products")
       .send(product);
 
     expect(response.status).toBe(201);
     expect(response.body.product).toMatchObject(product);
-    expect(productService.createProduct).toHaveBeenCalledWith(product);
+    expect(productService.createProduct).toHaveBeenCalledWith({
+      ...product,
+      owner: "507f1f77bcf86cd799439011",
+    });
   });
 
   test("POST /products rejects an invalid price", async () => {
-    const response = await request(app.callback()).post("/products").send({
+    const response = await authenticatedRequest.post("/products").send({
       name: "Milk",
       shop: "ICA",
       price: "not-a-number",
@@ -94,7 +116,7 @@ describe("Product API", () => {
   });
 
   test("POST /products rejects a missing unit", async () => {
-    const response = await request(app.callback()).post("/products").send({
+    const response = await authenticatedRequest.post("/products").send({
       name: "Milk",
       shop: "ICA",
       price: 10.9,
@@ -104,7 +126,7 @@ describe("Product API", () => {
     expect(response.body.message).toBe("Invalid product data");
   });
   test("POST /products rejects an empty name", async () => {
-    const response = await request(app.callback()).post("/products").send({
+    const response = await authenticatedRequest.post("/products").send({
       name: "",
       shop: "ICA",
       price: 10.9,
