@@ -9,30 +9,19 @@ import {
 import ErrorMessage from "./components/ErrorMessage";
 import AddProductForm from "./components/AddProductForm";
 import AuthForm from "./components/AuthForm";
-import { logout, getCurrentUser } from "./services/authApi";
+import { useAuth } from "./context/authContextValue";
 
 function App() {
   const [productName, setProductName] = useState("");
   const [error, setError] = useState("");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
   const [authMode, setAuthMode] = useState("login");
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const { user, isAuthLoading, logout } = useAuth();
 
   useEffect(() => {
     document.title = productName || "Grocery Compare";
   }, [productName]);
-
-  useEffect(() => {
-    async function restoreSession() {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-      setIsAuthLoading(false);
-    }
-
-    restoreSession();
-  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -113,17 +102,11 @@ function App() {
     }
   };
 
-  const handleLogin = async (loggedInUser) => {
-    setUser(loggedInUser);
-  };
-
   const handleLogout = () => {
     logout();
-    setUser(null);
     setProducts([]);
     setError("");
   };
-
   if (isAuthLoading) {
     return <p>Loading session...</p>;
   }
@@ -132,9 +115,9 @@ function App() {
     return (
       <main>
         <h1>Grocery Compare</h1>
-        <AuthForm mode={authMode} onSuccess={handleLogin} />
+        <AuthForm mode={authMode} />
         <button
-          className="button-secondary"
+          className="button-secondary auth-switch"
           type="button"
           onClick={() =>
             setAuthMode(authMode === "login" ? "register" : "login")

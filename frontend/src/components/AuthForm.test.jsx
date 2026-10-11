@@ -1,20 +1,31 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import AuthForm from "./AuthForm";
-import { login, register } from "../services/authApi";
+import { AuthProvider } from "../context/AuthContext";
+import { getCurrentUser, login, register } from "../services/authApi";
 
 vi.mock("../services/authApi", () => ({
   login: vi.fn(),
   register: vi.fn(),
+  getCurrentUser: vi.fn(),
 }));
+
+function renderAuthForm(props) {
+  return render(
+    <AuthProvider>
+      <AuthForm {...props} />
+    </AuthProvider>,
+  );
+}
 
 describe("AuthForm", () => {
   it("logs in successfully", async () => {
     const user = { id: "user-1", email: "test@example.com" };
     const onSuccess = vi.fn();
     login.mockResolvedValue({ user, token: "login-token" });
+    getCurrentUser.mockResolvedValue(null);
 
-    render(<AuthForm mode="login" onSuccess={onSuccess} />);
+    renderAuthForm({ mode: "login", onSuccess });
 
     fireEvent.change(screen.getByLabelText("Email"), {
       target: { value: "test@example.com" },
@@ -34,8 +45,9 @@ describe("AuthForm", () => {
     const user = { id: "user-2", email: "new@example.com" };
     const onSuccess = vi.fn();
     register.mockResolvedValue({ user, token: "registration-token" });
+    getCurrentUser.mockResolvedValue(null);
 
-    render(<AuthForm mode="register" onSuccess={onSuccess} />);
+    renderAuthForm({ mode: "register", onSuccess });
 
     expect(screen.getByRole("heading", { name: "Create account" })).toBeInTheDocument();
 
@@ -55,8 +67,9 @@ describe("AuthForm", () => {
 
   it("shows authentication errors", async () => {
     login.mockRejectedValue(new Error("Invalid email or password"));
+    getCurrentUser.mockResolvedValue(null);
 
-    render(<AuthForm mode="login" onSuccess={vi.fn()} />);
+    renderAuthForm({ mode: "login", onSuccess: vi.fn() });
 
     fireEvent.change(screen.getByLabelText("Email"), {
       target: { value: "test@example.com" },
@@ -78,8 +91,9 @@ describe("AuthForm", () => {
         resolveLogin = resolve;
       }),
     );
+    getCurrentUser.mockResolvedValue(null);
 
-    render(<AuthForm mode="login" onSuccess={vi.fn()} />);
+    renderAuthForm({ mode: "login", onSuccess: vi.fn() });
 
     fireEvent.change(screen.getByLabelText("Email"), {
       target: { value: "test@example.com" },

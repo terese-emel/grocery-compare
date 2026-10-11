@@ -88,6 +88,11 @@ main > button {
   margin: 0 0 24px;
 }
 
+.auth-switch {
+  display: block;
+  margin: 0 auto 24px;
+}
+
 button:hover:not(:disabled) {
   background-color: #18552c;
   border-color: #18552c;
