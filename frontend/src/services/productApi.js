@@ -1,79 +1,33 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { apiRequest } from "./apiClient";
 
-function authHeaders() {
-  const token = localStorage.getItem("authToken");
-
-  return {
-    Authorization: `Bearer ${token}`,
-  };
+export function searchProducts(name) {
+  return apiRequest(`/products?name=${encodeURIComponent(name)}`);
 }
 
-export async function searchProducts(name) {
-  const response = await fetch(
-    `${API_URL}/products?name=${encodeURIComponent(name)}`,
-    {
-      headers: authHeaders(),
-    },
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Search failed.");
-  }
-
-  return data;
+export function getProductById(id) {
+  return apiRequest(`/products/${id}`);
 }
 
-export async function createProduct(product) {
-  const response = await fetch(`${API_URL}/products`, {
+export function getAllProducts() {
+  return apiRequest("/products");
+}
+
+export function createProduct(product) {
+  return apiRequest("/products", {
     method: "POST",
-    headers: {
-      ...authHeaders(),
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(product),
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to create product.");
-  }
-
-  return data;
 }
 
-export async function updateProduct(id, product) {
-  const response = await fetch(`${API_URL}/products/${id}`, {
+export function updateProduct(id, product) {
+  return apiRequest(`/products/${id}`, {
     method: "PUT",
-    headers: {
-      ...authHeaders(),
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(product),
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to update product.");
-  }
-
-  return data;
 }
 
-export async function deleteProduct(id) {
-  const response = await fetch(`${API_URL}/products/${id}`, {
+export function deleteProduct(id) {
+  return apiRequest(`/products/${id}`, {
     method: "DELETE",
-    headers: authHeaders(),
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to delete product.");
-  }
-
-  return data;
 }
