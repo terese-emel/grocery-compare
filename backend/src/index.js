@@ -1,34 +1,37 @@
 const mongoose = require("mongoose");
 const app = require("./app");
+const { getConfig } = require("./config");
 
-const requiredVariables = [
-  "MONGODB_USER",
-  "MONGODB_PASSWORD",
-  "MONGODB_HOST",
-  "MONGODB_DATABASE",
-];
+let server;
 
 async function start() {
-  const missingVariables = requiredVariables.filter(
-    (variable) => !process.env[variable],
-  );
+  const config = getConfig();
 
-  if (missingVariables.length > 0) {
-    throw new Error(`Missing environment variables: ${missingVariables.join(", ")}`);
-  }
-
-  const username = encodeURIComponent(process.env.MONGODB_USER);
-  const password = encodeURIComponent(process.env.MONGODB_PASSWORD);
-  const MONGODB_URI =
-    `mongodb+srv://${username}:${password}@${process.env.MONGODB_HOST}/${process.env.MONGODB_DATABASE}`;
-
-  await mongoose.connect(MONGODB_URI);
+  await mongoose.connect(config.mongoUri);
   console.log("Connected to MongoDB");
 
-  app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+  server = app.listen(config.port, () => {
+    console.log(`Server running on http://localhost:${config.port}`);
   });
 }
+
+async function shutdown(signal) {
+  console.log(`${signal} received. Shutting down...`);
+
+  if (server) {
+    server.close(async () => {
+      await mongoose.disconnect();
+      console.log("MongoDB disconnected.");
+      process.exit(0);
+    });
+  } else {
+    await mongoose.disconnect();
+    process.exit(0);
+  }
+}
+
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
 
 start().catch((error) => {
   console.error("Application startup failed:", error.message);
