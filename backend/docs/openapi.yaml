@@ -1,4 +1,5 @@
 openapi: 3.0.3
+
 info:
   title: Grocery Compare API
   version: 1.0.0
@@ -6,31 +7,65 @@ info:
 
 servers:
   - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Health
+    description: Service and database health information
+  - name: Products
+    description: Grocery product operations
 
 paths:
   /health:
     get:
+      operationId: getHealth
+      tags:
+        - Health
       summary: Check API and database health
       responses:
         "200":
           description: API and database are healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
         "503":
           description: API is running but database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
 
   /products:
     get:
-      summary: List products
+      operationId: listProducts
+      tags:
+        - Products
+      summary: Get products
       parameters:
         - name: name
           in: query
           required: false
+          description: Search products by name
           schema:
             type: string
+          example: milk
       responses:
         "200":
           description: Products returned successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     post:
+      operationId: createProduct
+      tags:
+        - Products
       summary: Create a product
       requestBody:
         required: true
@@ -38,29 +73,200 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/ProductInput"
+            example:
+              name: Arla Milk 1L
+              shop: ICA
+              price: 10.9
+              unit: 1L
       responses:
         "201":
-          description: Product created
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductCreatedResponse"
         "400":
-          description: Invalid product data
+          $ref: "#/components/responses/InvalidProductData"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /products/cheapest:
     get:
+      operationId: getCheapestProducts
+      tags:
+        - Products
       summary: Find the cheapest matching products
       parameters:
         - name: name
           in: query
           required: true
+          description: Product name to search for
           schema:
             type: string
+          example: milk
       responses:
         "200":
-          description: Cheapest products returned
+          description: Cheapest products returned successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "400":
+          description: Product name is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "404":
           description: No matching products found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: MongoDB product ID
+        schema:
+          type: string
+        example: 64f1a2b3c4d5e6f789012345
+
+    get:
+      operationId: getProductById
+      tags:
+        - Products
+      summary: Get a product by ID
+      responses:
+        "200":
+          description: Product returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          $ref: "#/components/responses/InvalidProductId"
+        "404":
+          $ref: "#/components/responses/ProductNotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      operationId: updateProductPrice
+      tags:
+        - Products
+      summary: Update a product price
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PriceInput"
+            example:
+              price: 12.5
+      responses:
+        "200":
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductUpdatedResponse"
+        "400":
+          description: Invalid product ID or price
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          $ref: "#/components/responses/ProductNotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    patch:
+      operationId: patchProductPrice
+      tags:
+        - Products
+      summary: Patch a product price
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PriceInput"
+            example:
+              price: 12.5
+      responses:
+        "200":
+          description: Product price updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductUpdatedResponse"
+        "400":
+          description: Invalid product ID or price
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          $ref: "#/components/responses/ProductNotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      operationId: deleteProduct
+      tags:
+        - Products
+      summary: Delete a product
+      responses:
+        "200":
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          $ref: "#/components/responses/InvalidProductId"
+        "404":
+          $ref: "#/components/responses/ProductNotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   schemas:
+    Product:
+      type: object
+      required:
+        - _id
+        - name
+        - shop
+        - price
+        - unit
+      properties:
+        _id:
+          type: string
+          example: 64f1a2b3c4d5e6f789012345
+        name:
+          type: string
+          example: Arla Milk 1L
+        shop:
+          type: string
+          example: ICA
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 10.9
+        unit:
+          type: string
+          example: 1L
+
     ProductInput:
       type: object
       required:
@@ -77,8 +283,110 @@ components:
           example: ICA
         price:
           type: number
+          format: float
           minimum: 0
           example: 10.9
         unit:
           type: string
           example: 1L
+
+    PriceInput:
+      type: object
+      required:
+        - price
+      properties:
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 12.5
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Invalid product data
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - database
+      properties:
+        status:
+          type: string
+          enum:
+            - ok
+            - degraded
+          example: ok
+        database:
+          type: string
+          enum:
+            - connected
+            - disconnected
+          example: connected
+
+    MessageResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Product deleted successfully
+
+    ProductCreatedResponse:
+      type: object
+      required:
+        - message
+        - product
+      properties:
+        message:
+          type: string
+          example: Product created successfully
+        product:
+          $ref: "#/components/schemas/Product"
+
+    ProductUpdatedResponse:
+      type: object
+      required:
+        - message
+        - product
+      properties:
+        message:
+          type: string
+          example: Product updated successfully
+        product:
+          $ref: "#/components/schemas/Product"
+
+  responses:
+    InvalidProductData:
+      description: Invalid product data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InvalidProductId:
+      description: Invalid product ID
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    ProductNotFound:
+      description: Product not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

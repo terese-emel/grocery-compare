@@ -1,0 +1,10 @@
+extends:
+  - recommended
+
+rules:
+  # These read-only endpoints return 200, 500, or 503 in the application.
+  # They do not currently return a 4xx response.
+  operation-4xx-response: off
+  security-defined: off
+  info-license: off
+  no-server-example.com: off
