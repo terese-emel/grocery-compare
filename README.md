@@ -66,10 +66,10 @@ grocery-compare/
 │   │   ├── services/
 │   │   └── index.js
 │   ├── tests/
-│   │   ├── unit/          # service tests with mocked models
-│   │   ├── api/           # HTTP tests with mocked services
-│   │   └── integration/   # HTTP tests with temporary MongoDB
-│   ├── .env             # local database name; never commit secrets
+│   │   ├── unit/
+│   │   ├── api/
+│   │   └── integration/
+│   ├── .env
 │   ├── requests.http
 │   └── package.json
 ├── frontend/
@@ -79,9 +79,8 @@ grocery-compare/
 │   │   ├── App.jsx
 │   │   ├── main.jsx
 │   │   └── styles.css
-│   ├── .env.local       # VITE_API_URL; never commit
+│   ├── .env.local
 │   └── package.json
-├── frontend-basics/     # local plain HTML/CSS/JS exercises (ignored by Git)
 ├── .gitignore
 └── README.md
 ```
