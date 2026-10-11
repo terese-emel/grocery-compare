@@ -32,6 +32,16 @@ afterEach(async () => {
 });
 
 describe("Product API integration", () => {
+  test("GET /health reports a connected database", async () => {
+    const response = await request(app.callback()).get("/health");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      status: "ok",
+      database: "connected",
+    });
+  });
+
   test("creates a product", async () => {
     const product = {
       name: "Milk",

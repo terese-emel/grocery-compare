@@ -1,4 +1,5 @@
 const Koa = require("koa");
+const helmet = require("koa-helmet");
 const bodyParser = require("koa-bodyparser");
 const cors = require("@koa/cors");
 const productRoutes = require("./routes/productRoutes");
@@ -9,7 +10,8 @@ const app = new Koa();
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 
 app.use(errorHandler);
-app.use(bodyParser());
+app.use(helmet());
+app.use(bodyParser({ jsonLimit: "100kb" }));
 app.use(cors({ origin: frontendUrl }));
 app.use(productRoutes.routes());
 app.use(productRoutes.allowedMethods());

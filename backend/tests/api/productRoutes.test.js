@@ -9,6 +9,16 @@ describe("Product API", () => {
     jest.clearAllMocks();
   });
 
+  test("GET /health reports a disconnected database", async () => {
+    const response = await request(app.callback()).get("/health");
+
+    expect(response.status).toBe(503);
+    expect(response.body).toEqual({
+      status: "degraded",
+      database: "disconnected",
+    });
+  });
+
   test("GET /products?name=milk returns matching products", async () => {
     productService.getProducts.mockResolvedValue([
       { _id: "1", name: "Milk", shop: "ICA", price: 10.9, unit: "1L" },
