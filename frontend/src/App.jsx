@@ -135,9 +135,7 @@ function App() {
     <main>
       <h1>Grocery Compare</h1>
       <p>Find the cheapest grocery products.</p>
-
       <p>Signed in as {user.email}</p>
-
       <button className="button-secondary" type="button" onClick={handleLogout}>
         Logout
       </button>
