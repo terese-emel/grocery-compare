@@ -6,8 +6,8 @@ const {
 } = require("../validation/productValidation");
 
 const getProducts = async (ctx) => {
-  const name = ctx.query.name;
-  const products = await productService.getProducts(name);
+  const products = await productService.getProducts(ctx.query.name);
+
   ctx.status = 200;
   ctx.body = products;
 };
@@ -38,19 +38,26 @@ const createProduct = async (ctx) => {
 
   if (!productData) {
     ctx.status = 400;
-    ctx.body = { message: "Invalid product data" };
+    ctx.body = {
+      message: "Invalid product data",
+    };
     return;
   }
 
-  const product = await productService.createProduct(productData);
+  const product = await productService.createProduct({
+    ...productData,
+    owner: ctx.state.user.userId,
+  });
 
   ctx.status = 201;
-  ctx.body = { message: "Product created successfully", product };
+  ctx.body = {
+    message: "Product created successfully",
+    product,
+  };
 };
 
 const updateProduct = async (ctx) => {
   const productId = ctx.params.id;
-  const { price } = ctx.request.body;
 
   if (!mongoose.isValidObjectId(productId)) {
     ctx.status = 400;
@@ -58,17 +65,19 @@ const updateProduct = async (ctx) => {
     return;
   }
 
-  const numericPrice = validatePrice(price);
+  const numericPrice = validatePrice(ctx.request.body?.price);
 
   if (numericPrice === null) {
     ctx.status = 400;
-    ctx.body = { message: "Price is required" };
+    ctx.body = { message: "Valid price is required" };
     return;
   }
 
-  const updatedProduct = await productService.updateProduct(productId, {
-    price: numericPrice,
-  });
+  const updatedProduct = await productService.updateProduct(
+    productId,
+    { price: numericPrice },
+    ctx.state.user.userId,
+  );
 
   if (!updatedProduct) {
     ctx.status = 404;
@@ -92,7 +101,10 @@ const deleteProduct = async (ctx) => {
     return;
   }
 
-  const product = await productService.deleteProduct(productId);
+  const product = await productService.deleteProduct(
+    productId,
+    ctx.state.user.userId,
+  );
 
   if (!product) {
     ctx.status = 404;
@@ -101,12 +113,13 @@ const deleteProduct = async (ctx) => {
   }
 
   ctx.status = 200;
-  ctx.body = { message: "Product deleted successfully" };
+  ctx.body = {
+    message: "Product deleted successfully",
+  };
 };
 
 const patchProductPrice = async (ctx) => {
   const productId = ctx.params.id;
-  const { price } = ctx.request.body;
 
   if (!mongoose.isValidObjectId(productId)) {
     ctx.status = 400;
@@ -114,15 +127,19 @@ const patchProductPrice = async (ctx) => {
     return;
   }
 
-  const numericPrice = validatePrice(price);
+  const numericPrice = validatePrice(ctx.request.body?.price);
 
   if (numericPrice === null) {
     ctx.status = 400;
-    ctx.body = { message: "Price is required" };
+    ctx.body = { message: "Valid price is required" };
     return;
   }
 
-  const product = await productService.patchProductPrice(productId, numericPrice);
+  const product = await productService.patchProductPrice(
+    productId,
+    numericPrice,
+    ctx.state.user.userId,
+  );
 
   if (!product) {
     ctx.status = 404;
@@ -138,22 +155,28 @@ const patchProductPrice = async (ctx) => {
 };
 
 const cheapestProduct = async (ctx) => {
-  const name = ctx.query.name;
-  if (!name) {
+  const { name } = ctx.query;
+
+  if (!name || !name.trim()) {
     ctx.status = 400;
-    ctx.body = { message: "Product name is required" };
+    ctx.body = {
+      message: "Product name is required",
+    };
     return;
   }
-  const product = await productService.getCheapestProduct(name);
 
-  if (!product) {
+  const products = await productService.getCheapestProduct(name);
+
+  if (!products) {
     ctx.status = 404;
-    ctx.body = { message: "No products found" };
+    ctx.body = {
+      message: "No products found",
+    };
     return;
   }
 
   ctx.status = 200;
-  ctx.body = product;
+  ctx.body = products;
 };
 
 module.exports = {

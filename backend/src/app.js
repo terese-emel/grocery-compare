@@ -5,6 +5,7 @@ const bodyParser = require("koa-bodyparser");
 const cors = require("@koa/cors");
 const productRoutes = require("./routes/productRoutes");
 const healthRoutes = require("./routes/healthRoutes");
+const authRoutes = require("./routes/authRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = new Koa();
@@ -35,6 +36,8 @@ app.use(helmet());
 app.use(bodyParser({ jsonLimit: "100kb" }));
 app.use(cors({ origin: frontendUrl }));
 app.use(apiLimiter);
+app.use(authRoutes.routes());
+app.use(authRoutes.allowedMethods());
 app.use(productRoutes.routes());
 app.use(productRoutes.allowedMethods());
 app.use(healthRoutes.routes());

@@ -1,14 +1,14 @@
-const errorHandler = async (ctx, next) => {
+async function errorHandler(ctx, next) {
   try {
     await next();
   } catch (error) {
     console.error("Unhandled error:", error);
 
-    ctx.status = 500;
+    ctx.status = error.status || 500;
     ctx.body = {
-      message: "Internal server error",
+      message: ctx.status === 500 ? "Internal server error" : error.message,
     };
   }
-};
+}
 
 module.exports = errorHandler;

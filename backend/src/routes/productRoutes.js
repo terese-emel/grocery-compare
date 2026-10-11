@@ -1,5 +1,7 @@
 const Router = require("@koa/router");
 
+const requireAuth = require("../middleware/authMiddleware");
+
 const router = new Router();
 
 const {
@@ -11,6 +13,8 @@ const {
   patchProductPrice,
   cheapestProduct,
 } = require("../controllers/productController");
+
+router.use(requireAuth);
 
 router.get("/products", getProducts);
 router.get("/products/cheapest", cheapestProduct);

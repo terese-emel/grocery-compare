@@ -1,28 +1,66 @@
 @baseUrl = http://localhost:3000
-
-# After creating a product, copy its _id here
-@productId = 6ac634a918570379d9d380b4
-
+@productId = returned-id-here
+@auth_token = replace-me-with-a-valid-jwt
 
 ###############################################
-# Health check
+# Health
 ###############################################
 
-GET http://localhost:3000/health
+GET {{baseUrl}}/health
+
+###############################################
+# Register
+###############################################
 
 ###
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
 ###############################################
-# GET ALL PRODUCTS
+# Login and save JWT automatically
 ###############################################
+
+###
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+###############################################
+# Dynamic token
+###############################################
+
+@auth_token = {{login.response.body.$.token}}
+
+###############################################
+# Get all products
+###############################################
+
+###
+
 GET {{baseUrl}}/products
+Authorization: Bearer {{auth_token}}
+
+###############################################
+# Create product
+###############################################
 
 ###
-
-###############################################
-# CREATE PRODUCT
-###############################################
 
 POST {{baseUrl}}/products
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
@@ -31,101 +69,53 @@ Content-Type: application/json
   "price": 10.9,
   "unit": "1L"
 }
-###
 
 ###############################################
-# GET ALL PRODUCTS
+# Get one product
 ###############################################
-
-GET {{baseUrl}}/products
 
 ###
-###
-
-###############################################
-# GET ONE PRODUCT
-###############################################
 
 GET {{baseUrl}}/products/{{productId}}
-
-### 1. Valid ID + existing product
-GET {{baseUrl}}/products/{{productId}}
-
-###
-
-### 2. Invalid MongoDB ID
-GET {{baseUrl}}/products/hello
-
-###
-
-### 3. Valid MongoDB ID, but product doesn't exist
-GET {{baseUrl}}/products/000000000000000000000000
-###
+Authorization: Bearer {{auth_token}}
 
 ###############################################
-# PATCH PRODUCT
+# Update product price
 ###############################################
+
+###
 
 PATCH {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
   "price": 20.9
 }
 
-###
-
 ###############################################
-# GET PRODUCT AFTER UPDATE
+# Delete product
 ###############################################
-
-GET {{baseUrl}}/products/{{productId}}
 
 ###
-
-###############################################
-# DELETE PRODUCT
-###############################################
 
 DELETE {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{auth_token}}
+
+###############################################
+# Search by name
+###############################################
 
 ###
-
-###############################################
-# FILTER BY SHOP
-###############################################
-
-GET {{baseUrl}}/products?shop=Hemköp
-
-###
-
-###############################################
-# FILTER BY NAME
-###############################################
 
 GET {{baseUrl}}/products?name=milk
+Authorization: Bearer {{auth_token}}
+
+###############################################
+# Cheapest products
+###############################################
 
 ###
-
-###############################################
-# FILTER BY NAME + SHOP
-###############################################
-
-GET {{baseUrl}}/products?name=milk&shop=Coop
-
-###
-
-###############################################
-# FILTER BY NAME 
-###############################################
 
 GET {{baseUrl}}/products/cheapest?name=milk
-
-###
-
-
-GET http://localhost:3000/products?name=milk
-
-
-
-http://localhost:3000/docs
+Authorization: Bearer {{auth_token}}
