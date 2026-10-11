@@ -1,6 +1,7 @@
 process.env.JWT_SECRET = "test-secret";
 
 const request = require("supertest");
+const jwt = require("jsonwebtoken");
 const app = require("../../src/app");
 const authService = require("../../src/services/authService");
 
@@ -94,6 +95,34 @@ describe("Authentication API", () => {
 
   test("protected product routes reject missing authentication", async () => {
     const response = await request(app.callback()).get("/products");
+
+    expect(response.status).toBe(401);
+    expect(response.body).toEqual({
+      message: "Authentication required",
+    });
+  });
+
+  test("GET /auth/me returns the authenticated user", async () => {
+    const token = jwt.sign(
+      { userId: "user-1", email: "test@example.com" },
+      process.env.JWT_SECRET,
+    );
+
+    const response = await request(app.callback())
+      .get("/auth/me")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      user: {
+        id: "user-1",
+        email: "test@example.com",
+      },
+    });
+  });
+
+  test("GET /auth/me rejects a missing token", async () => {
+    const response = await request(app.callback()).get("/auth/me");
 
     expect(response.status).toBe(401);
     expect(response.body).toEqual({
