@@ -47,3 +47,26 @@ export function getAuthToken() {
 export function logout() {
   localStorage.removeItem("authToken");
 }
+
+export async function getCurrentUser() {
+  const token = getAuthToken();
+
+  if (!token) {
+    return null;
+  }
+
+  const response = await fetch(`${API_URL}/auth/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    logout();
+    return null;
+  }
+
+  const data = await response.json();
+
+  return data.user;
+}

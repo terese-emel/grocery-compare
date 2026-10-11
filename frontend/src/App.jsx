@@ -9,7 +9,7 @@ import {
 import ErrorMessage from "./components/ErrorMessage";
 import AddProductForm from "./components/AddProductForm";
 import AuthForm from "./components/AuthForm";
-import { logout } from "./services/authApi";
+import { logout, getCurrentUser } from "./services/authApi";
 
 function App() {
   const [productName, setProductName] = useState("");
@@ -18,10 +18,21 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [authMode, setAuthMode] = useState("login");
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
     document.title = productName || "Grocery Compare";
   }, [productName]);
+
+  useEffect(() => {
+    async function restoreSession() {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+      setIsAuthLoading(false);
+    }
+
+    restoreSession();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -113,6 +124,10 @@ function App() {
     setError("");
   };
 
+  if (isAuthLoading) {
+    return <p>Loading session...</p>;
+  }
+
   if (!user) {
     return (
       <main>
@@ -121,9 +136,13 @@ function App() {
         <button
           className="button-secondary"
           type="button"
-          onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}
+          onClick={() =>
+            setAuthMode(authMode === "login" ? "register" : "login")
+          }
         >
-          {authMode === "login" ? "Create a new account" : "I already have an account"}
+          {authMode === "login"
+            ? "Create a new account"
+            : "I already have an account"}
         </button>
       </main>
     );
