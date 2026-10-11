@@ -161,9 +161,8 @@ Integration tests use a temporary in-memory MongoDB instance and do not modify y
 
 The project is being developed step by step:
 
-1. HTML, CSS, and browser JavaScript in `frontend-basics/`
-2. REST APIs with Koa
-3. MongoDB and Mongoose
-4. React components, state, props, and effects
-5. Frontend API integration
-6. Testing, Docker, and deployment
+1. REST APIs with Koa
+2. MongoDB and Mongoose
+3. React components, state, props, and effects
+4. Frontend API integration
+5. Testing, Docker, and deployment
