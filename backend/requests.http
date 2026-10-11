@@ -125,3 +125,7 @@ GET {{baseUrl}}/products/cheapest?name=milk
 
 
 GET http://localhost:3000/products?name=milk
+
+
+
+http://localhost:3000/docs

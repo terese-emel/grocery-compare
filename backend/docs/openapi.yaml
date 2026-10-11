@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: Grocery Compare API
+  version: 1.0.0
+  description: API for comparing grocery prices across shops.
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /health:
+    get:
+      summary: Check API and database health
+      responses:
+        "200":
+          description: API and database are healthy
+        "503":
+          description: API is running but database is unavailable
+
+  /products:
+    get:
+      summary: List products
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Products returned successfully
+
+    post:
+      summary: Create a product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "201":
+          description: Product created
+        "400":
+          description: Invalid product data
+
+  /products/cheapest:
+    get:
+      summary: Find the cheapest matching products
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cheapest products returned
+        "404":
+          description: No matching products found
+
+components:
+  schemas:
+    ProductInput:
+      type: object
+      required:
+        - name
+        - shop
+        - price
+        - unit
+      properties:
+        name:
+          type: string
+          example: Arla Milk 1L
+        shop:
+          type: string
+          example: ICA
+        price:
+          type: number
+          minimum: 0
+          example: 10.9
+        unit:
+          type: string
+          example: 1L

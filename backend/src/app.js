@@ -15,6 +15,21 @@ const apiLimiter = RateLimit.middleware({
   message: "Too many requests. Please try again later.",
 });
 
+const path = require("path");
+const YAML = require("yamljs");
+const { koaSwagger } = require("koa2-swagger-ui");
+
+const swaggerDocument = YAML.load(path.join(__dirname, "../docs/openapi.yaml"));
+
+app.use(
+  koaSwagger({
+    routePrefix: "/docs",
+    swaggerOptions: {
+      spec: swaggerDocument,
+    },
+  }),
+);
+
 app.use(errorHandler);
 app.use(helmet());
 app.use(bodyParser({ jsonLimit: "100kb" }));
