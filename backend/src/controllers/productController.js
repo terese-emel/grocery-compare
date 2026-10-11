@@ -1,15 +1,12 @@
 const mongoose = require("mongoose");
 const productService = require("../services/productService");
+const {
+  validateProductData,
+  validatePrice,
+} = require("../validation/productValidation");
 
 const getProducts = async (ctx) => {
   const name = ctx.query.name;
-
-  if (!name) {
-    ctx.status = 400;
-    ctx.body = { message: "Product name is required" };
-    return;
-  }
-
   const products = await productService.getProducts(name);
   ctx.status = 200;
   ctx.body = products;
@@ -37,28 +34,15 @@ const getProductById = async (ctx) => {
 };
 
 const createProduct = async (ctx) => {
-  const { name, shop, price, unit } = ctx.request.body;
+  const productData = validateProductData(ctx.request.body);
 
-  if (
-    !name ||
-    !shop ||
-    !unit ||
-    price === undefined ||
-    !Number.isFinite(price) ||
-    price < 0
-  ) {
+  if (!productData) {
     ctx.status = 400;
     ctx.body = { message: "Invalid product data" };
     return;
   }
 
-  const newProduct = {
-    name,
-    shop,
-    price,
-    unit,
-  };
-  const product = await productService.createProduct(newProduct);
+  const product = await productService.createProduct(productData);
 
   ctx.status = 201;
   ctx.body = { message: "Product created successfully", product };
@@ -74,14 +58,16 @@ const updateProduct = async (ctx) => {
     return;
   }
 
-  if (price === undefined) {
+  const numericPrice = validatePrice(price);
+
+  if (numericPrice === null) {
     ctx.status = 400;
     ctx.body = { message: "Price is required" };
     return;
   }
 
   const updatedProduct = await productService.updateProduct(productId, {
-    price,
+    price: numericPrice,
   });
 
   if (!updatedProduct) {
@@ -128,13 +114,15 @@ const patchProductPrice = async (ctx) => {
     return;
   }
 
-  if (price === undefined) {
+  const numericPrice = validatePrice(price);
+
+  if (numericPrice === null) {
     ctx.status = 400;
     ctx.body = { message: "Price is required" };
     return;
   }
 
-  const product = await productService.patchProductPrice(productId, price);
+  const product = await productService.patchProductPrice(productId, numericPrice);
 
   if (!product) {
     ctx.status = 404;

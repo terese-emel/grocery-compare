@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createProduct } from "../services/productApi";
 
-const AddProductForm = () => {
+const AddProductForm = ({ onCreated }) => {
   const [productName, setProductName] = useState("");
   const [shopName, setShopName] = useState("");
   const [price, setPrice] = useState("");
@@ -42,7 +42,8 @@ const AddProductForm = () => {
         unit: unit,
       };
 
-      await createProduct(product);
+      const response = await createProduct(product);
+      onCreated?.(response.product);
 
       setMessage("Product added successfully!");
       setProductName("");

@@ -26,14 +26,14 @@ function App() {
     setLoading(true);
     setProducts([]);
 
-    if (productName.trim().length < 2) {
-      setError("Please enter at least 2 characters.");
+    if (productName.trim() === "") {
+      setError("Please enter a product name.");
       setLoading(false);
       return;
     }
 
-    if (productName.trim() === "") {
-      setError("Please enter a product name.");
+    if (productName.trim().length < 2) {
+      setError("Please enter at least 2 characters.");
       setLoading(false);
       return;
     }
@@ -84,6 +84,17 @@ function App() {
       );
     } catch (requestError) {
       setError(requestError.message);
+      throw requestError;
+    }
+  };
+
+  const handleCreated = (product) => {
+    if (!productName.trim()) return;
+
+    if (product.name.toLowerCase().includes(productName.trim().toLowerCase())) {
+      setProducts((currentProducts) =>
+        [...currentProducts, product].sort((a, b) => a.price - b.price),
+      );
     }
   };
 
@@ -107,7 +118,7 @@ function App() {
         onDelete={handleDelete}
         onUpdate={handleUpdate}
       />
-      <AddProductForm />
+      <AddProductForm onCreated={handleCreated} />
     </main>
   );
 }

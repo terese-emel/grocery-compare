@@ -21,13 +21,14 @@ describe("Product API", () => {
     expect(productService.getProducts).toHaveBeenCalledWith("milk");
   });
 
-  test("GET /products requires a product name", async () => {
+  test("GET /products returns all products when no name is provided", async () => {
+    productService.getProducts.mockResolvedValue([]);
+
     const response = await request(app.callback()).get("/products");
 
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual({
-      message: "Product name is required",
-    });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
+    expect(productService.getProducts).toHaveBeenCalledWith(undefined);
   });
 
   test("GET /products/cheapest returns the cheapest products", async () => {
@@ -94,16 +95,6 @@ describe("Product API", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("Invalid product data");
-  });
-  test("POST /products rejects an empty name", async () => {
-    const response = await request(app.callback()).post("/products").send({
-      name: "",
-      shop: "ICA",
-      price: 10.9,
-      unit: "1L",
-    });
-
-    expect(response.status).toBe(400);
   });
   test("POST /products rejects an empty name", async () => {
     const response = await request(app.callback()).post("/products").send({

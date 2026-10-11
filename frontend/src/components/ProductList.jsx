@@ -3,6 +3,7 @@ import { useState } from "react";
 const ProductList = ({ products, onDelete, onUpdate }) => {
   const [editingProductId, setEditingProductId] = useState(null);
   const [editedProductPrice, setEditedProductPrice] = useState("");
+  const [savingProductId, setSavingProductId] = useState(null);
 
   if (!products || products.length === 0) {
     return null;
@@ -21,8 +22,13 @@ const ProductList = ({ products, onDelete, onUpdate }) => {
   };
 
   const saveEditedPrice = async (productId) => {
-    await onUpdate(productId, parseFloat(editedProductPrice));
-    cancelEditing();
+    setSavingProductId(productId);
+    try {
+      await onUpdate(productId, parseFloat(editedProductPrice));
+      cancelEditing();
+    } finally {
+      setSavingProductId(null);
+    }
   };
 
   return (
@@ -53,11 +59,16 @@ const ProductList = ({ products, onDelete, onUpdate }) => {
                 <button
                   type="button"
                   onClick={() => saveEditedPrice(product._id)}
+                  disabled={savingProductId === product._id}
                 >
-                  Save
+                  {savingProductId === product._id ? "Saving..." : "Save"}
                 </button>
 
-                <button type="button" onClick={cancelEditing}>
+                <button
+                  type="button"
+                  onClick={cancelEditing}
+                  disabled={savingProductId === product._id}
+                >
                   Cancel
                 </button>
               </>
