@@ -81,7 +81,9 @@ const updateProduct = async (ctx) => {
 
   if (!updatedProduct) {
     ctx.status = 404;
-    ctx.body = { message: "Product not found" };
+    ctx.body = {
+      message: "Product not found or you do not have permission to modify it",
+    };
     return;
   }
 
@@ -108,7 +110,9 @@ const deleteProduct = async (ctx) => {
 
   if (!product) {
     ctx.status = 404;
-    ctx.body = { message: "Product not found" };
+    ctx.body = {
+      message: "Product not found or you do not have permission to modify it",
+    };
     return;
   }
 
@@ -143,7 +147,9 @@ const patchProductPrice = async (ctx) => {
 
   if (!product) {
     ctx.status = 404;
-    ctx.body = { message: "Product not found" };
+    ctx.body = {
+      message: "Product not found or you do not have permission to modify it",
+    };
     return;
   }
 
