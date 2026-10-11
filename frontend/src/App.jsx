@@ -8,18 +8,21 @@ import {
 } from "./services/productApi";
 import ErrorMessage from "./components/ErrorMessage";
 import AddProductForm from "./components/AddProductForm";
+import LoginForm from "./components/LoginForm";
+import { logout } from "./services/authApi";
 
 function App() {
   const [productName, setProductName] = useState("");
   const [error, setError] = useState("");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     document.title = productName || "Grocery Compare";
   }, [productName]);
 
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     setError("");
@@ -53,7 +56,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const clearSearch = () => {
     setProductName("");
@@ -61,7 +64,7 @@ function App() {
     setError("");
   };
 
-  async function handleDelete(id) {
+  const handleDelete = async (id) => {
     try {
       await deleteProduct(id);
 
@@ -71,7 +74,7 @@ function App() {
     } catch (requestError) {
       setError(requestError.message);
     }
-  }
+  };
 
   const handleUpdate = async (id, newPrice) => {
     try {
@@ -98,10 +101,36 @@ function App() {
     }
   };
 
+  const handleLogin = async (loggedInUser) => {
+    setUser(loggedInUser);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setUser(null);
+    setProducts([]);
+    setError("");
+  };
+
+  if (!user) {
+    return (
+      <main>
+        <h1>Grocery Compare</h1>
+        <LoginForm onLogin={handleLogin} />
+      </main>
+    );
+  }
+
   return (
     <main>
       <h1>Grocery Compare</h1>
       <p>Find the cheapest grocery products.</p>
+
+      <p>Signed in as {user.email}</p>
+
+      <button type="button" onClick={handleLogout}>
+        Logout
+      </button>
 
       <SearchForm
         productName={productName}
