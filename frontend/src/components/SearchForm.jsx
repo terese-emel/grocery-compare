@@ -20,7 +20,12 @@ const SearchForm = ({
       <button type="submit" disabled={loading}>
         {loading ? "Searching..." : "Search"}
       </button>
-      <button type="button" onClick={clearSearch} disabled={loading}>
+      <button
+        className="button-secondary"
+        type="button"
+        onClick={clearSearch}
+        disabled={loading}
+      >
         Clear
       </button>
     </form>

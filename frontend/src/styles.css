@@ -47,7 +47,7 @@ form {
   flex-direction: column;
   gap: 10px;
   max-width: 420px;
-  margin-top: 40px;
+  margin: 40px 0 28px;
 }
 
 label {
@@ -66,15 +66,56 @@ input {
 }
 
 button {
+  min-height: 44px;
+  padding: 10px 16px;
   color: white;
   background-color: #206b38;
-  border: 0;
+  border: 2px solid #206b38;
   cursor: pointer;
+  font-weight: 700;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+form button {
+  width: 100%;
+}
+
+main > button {
+  width: auto;
+  margin: 0 0 24px;
+}
+
+button:hover:not(:disabled) {
+  background-color: #18552c;
+  border-color: #18552c;
+  transform: translateY(-1px);
+}
+
+button:focus-visible {
+  outline: 3px solid #9bd6ab;
+  outline-offset: 2px;
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 button:disabled {
   cursor: wait;
   opacity: 0.65;
+}
+
+.button-secondary {
+  color: #206b38;
+  background-color: transparent;
+}
+
+.button-secondary:hover:not(:disabled) {
+  color: white;
+  background-color: #206b38;
 }
 
 section {
@@ -92,8 +133,17 @@ section {
   background: white;
 }
 
+.product-card button {
+  width: auto;
+  margin: 0;
+}
+
 .product-card strong {
   margin-left: auto;
+}
+
+.product-card button {
+  min-width: 76px;
 }
 
 .cheapest {

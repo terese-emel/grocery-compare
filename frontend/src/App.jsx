@@ -8,7 +8,7 @@ import {
 } from "./services/productApi";
 import ErrorMessage from "./components/ErrorMessage";
 import AddProductForm from "./components/AddProductForm";
-import LoginForm from "./components/LoginForm";
+import AuthForm from "./components/AuthForm";
 import { logout } from "./services/authApi";
 
 function App() {
@@ -17,6 +17,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [authMode, setAuthMode] = useState("login");
 
   useEffect(() => {
     document.title = productName || "Grocery Compare";
@@ -116,7 +117,14 @@ function App() {
     return (
       <main>
         <h1>Grocery Compare</h1>
-        <LoginForm onLogin={handleLogin} />
+        <AuthForm mode={authMode} onSuccess={handleLogin} />
+        <button
+          className="button-secondary"
+          type="button"
+          onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}
+        >
+          {authMode === "login" ? "Create a new account" : "I already have an account"}
+        </button>
       </main>
     );
   }
@@ -128,7 +136,7 @@ function App() {
 
       <p>Signed in as {user.email}</p>
 
-      <button type="button" onClick={handleLogout}>
+      <button className="button-secondary" type="button" onClick={handleLogout}>
         Logout
       </button>
 

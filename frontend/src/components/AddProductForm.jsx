@@ -102,7 +102,12 @@ const AddProductForm = ({ onCreated }) => {
         <button type="submit" disabled={saving}>
           {saving ? "Adding..." : "Add Product"}
         </button>
-        <button type="button" onClick={resetForm} disabled={saving}>
+        <button
+          className="button-secondary"
+          type="button"
+          onClick={resetForm}
+          disabled={saving}
+        >
           Reset
         </button>
       </form>
