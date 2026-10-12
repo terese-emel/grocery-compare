@@ -20,13 +20,27 @@ describe("productService", () => {
       sort,
     });
 
-    const result = await productService.getProducts("milk");
+    const result = await productService.getProducts({ name: "milk" });
 
     expect(Product.find).toHaveBeenCalledWith({
       name: { $regex: "milk", $options: "i" },
     });
     expect(sort).toHaveBeenCalledWith({ price: 1 });
     expect(result).toEqual(products);
+  });
+
+  test("filters products by name and shop", async () => {
+    const sort = jest.fn().mockResolvedValue([]);
+
+    Product.find.mockReturnValue({ sort });
+
+    await productService.getProducts({ name: "milk", shop: "ICA" });
+
+    expect(Product.find).toHaveBeenCalledWith({
+      name: { $regex: "milk", $options: "i" },
+      shop: { $regex: "ICA", $options: "i" },
+    });
+    expect(sort).toHaveBeenCalledWith({ price: 1 });
   });
 
   test("returns all products tied for cheapest price", async () => {
