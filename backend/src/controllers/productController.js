@@ -1,23 +1,7 @@
 const mongoose = require("mongoose");
 const productService = require("../services/productService");
-const {
-  cheapestQuerySchema,
-  priceSchema,
-  productQuerySchema,
-  productSchema,
-} = require("../validation/schemas");
-const { parseSchema } = require("../validation/parse");
-
 const getProducts = async (ctx) => {
-  const result = parseSchema(productQuerySchema, ctx.query);
-
-  if (result.error) {
-    ctx.status = 400;
-    ctx.body = { message: result.error };
-    return;
-  }
-
-  const products = await productService.getProducts(result.data);
+  const products = await productService.getProducts(ctx.state.validated.query);
 
   ctx.status = 200;
   ctx.body = products;
@@ -45,18 +29,10 @@ const getProductById = async (ctx) => {
 };
 
 const createProduct = async (ctx) => {
-  const result = parseSchema(productSchema, ctx.request.body || {});
-
-  if (result.error) {
-    ctx.status = 400;
-    ctx.body = {
-      message: "Invalid product data",
-    };
-    return;
-  }
+  const productData = ctx.state.validated.body;
 
   const product = await productService.createProduct({
-    ...result.data,
+    ...productData,
     owner: ctx.state.user.userId,
   });
 
@@ -76,17 +52,10 @@ const updateProduct = async (ctx) => {
     return;
   }
 
-  const result = parseSchema(priceSchema, ctx.request.body || {});
-
-  if (result.error) {
-    ctx.status = 400;
-    ctx.body = { message: "Valid price is required" };
-    return;
-  }
 
   const updatedProduct = await productService.updateProduct(
     productId,
-    result.data,
+    { price: ctx.state.validated.body.price },
     ctx.state.user.userId,
   );
 
@@ -142,17 +111,9 @@ const patchProductPrice = async (ctx) => {
     return;
   }
 
-  const result = parseSchema(priceSchema, ctx.request.body || {});
-
-  if (result.error) {
-    ctx.status = 400;
-    ctx.body = { message: "Valid price is required" };
-    return;
-  }
-
   const product = await productService.patchProductPrice(
     productId,
-    result.data.price,
+    ctx.state.validated.body.price,
     ctx.state.user.userId,
   );
 
@@ -172,17 +133,9 @@ const patchProductPrice = async (ctx) => {
 };
 
 const cheapestProduct = async (ctx) => {
-  const result = parseSchema(cheapestQuerySchema, ctx.query);
-
-  if (result.error) {
-    ctx.status = 400;
-    ctx.body = {
-      message: "Product name is required",
-    };
-    return;
-  }
-
-  const products = await productService.getCheapestProduct(result.data.name);
+  const products = await productService.getCheapestProduct(
+    ctx.state.validated.query.name,
+  );
 
   if (!products) {
     ctx.status = 404;

@@ -1,19 +1,11 @@
 const authService = require("../services/authService");
-const { loginSchema, registerSchema } = require("../validation/schemas");
-const { parseSchema } = require("../validation/parse");
 
 async function register(ctx) {
-  const result = parseSchema(registerSchema, ctx.request.body || {});
-
-  if (result.error) {
-    ctx.status = 400;
-    ctx.body = { message: result.error };
-    return;
-  }
+  const { email, password } = ctx.state.validated.body;
 
   const registeredUser = await authService.registerUser(
-    result.data.email,
-    result.data.password,
+    email,
+    password,
   );
 
   ctx.status = 201;
@@ -21,17 +13,11 @@ async function register(ctx) {
 }
 
 async function login(ctx) {
-  const result = parseSchema(loginSchema, ctx.request.body || {});
-
-  if (result.error) {
-    ctx.status = 400;
-    ctx.body = { message: result.error };
-    return;
-  }
+  const { email, password } = ctx.state.validated.body;
 
   const loggedInUser = await authService.loginUser(
-    result.data.email,
-    result.data.password,
+    email,
+    password,
   );
 
   ctx.status = 200;
