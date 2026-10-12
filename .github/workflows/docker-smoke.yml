@@ -1,0 +1,55 @@
+name: Docker smoke test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  compose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Build and start services
+        run: docker compose up --build --detach
+
+      - name: Wait for backend health endpoint
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent http://localhost:3000/health; then
+              echo
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Backend did not become healthy in time"
+          docker compose ps
+          docker compose logs
+          exit 1
+
+      - name: Check frontend response
+        run: curl --fail --silent http://localhost:8080/ > /dev/null
+
+      - name: Upload Docker logs
+        if: always()
+        run: docker compose logs > docker-compose.log
+
+      - name: Store Docker logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-compose-logs
+          path: docker-compose.log
+
+      - name: Stop services
+        if: always()
+        run: docker compose down --volumes
