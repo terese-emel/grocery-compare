@@ -13,6 +13,7 @@ import { useAuth } from "./context/authContextValue";
 
 function App() {
   const [productName, setProductName] = useState("");
+  const [shopName, setShopName] = useState("");
   const [error, setError] = useState("");
   const [products, setProducts] = useState([]);
   const [pagination, setPagination] = useState(null);
@@ -42,7 +43,11 @@ function App() {
     }
 
     try {
-      const data = await searchProducts({ name: productName, page });
+      const data = await searchProducts({
+        name: productName,
+        shop: shopName,
+        page,
+      });
 
       if (data.items.length === 0) {
         setError("No products found.");
@@ -154,6 +159,8 @@ function App() {
       <SearchForm
         productName={productName}
         setProductName={setProductName}
+        shopName={shopName}
+        setShopName={setShopName}
         handleSubmit={handleSubmit}
         loading={loading}
         clearSearch={clearSearch}

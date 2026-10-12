@@ -13,9 +13,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     async function restoreSession() {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-      setIsAuthLoading(false);
+      try {
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
+      } catch {
+        setUser(null);
+      } finally {
+        setIsAuthLoading(false);
+      }
     }
 
     restoreSession();

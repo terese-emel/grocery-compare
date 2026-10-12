@@ -3,10 +3,15 @@ const authService = require("../services/authService");
 async function register(ctx) {
   const { email, password } = ctx.request.body || {};
 
-  if (!email || !password) {
+  if (
+    typeof email !== "string" ||
+    typeof password !== "string" ||
+    !email.trim() ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+  ) {
     ctx.status = 400;
     ctx.body = {
-      message: "Email and password are required",
+      message: "A valid email and password are required",
     };
     return;
   }
@@ -28,7 +33,7 @@ async function register(ctx) {
 async function login(ctx) {
   const { email, password } = ctx.request.body || {};
 
-  if (!email || !password) {
+  if (typeof email !== "string" || typeof password !== "string" || !email.trim()) {
     ctx.status = 400;
     ctx.body = {
       message: "Email and password are required",

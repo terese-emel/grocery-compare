@@ -1,20 +1,29 @@
 const Product = require("../models/Product");
 
+const escapeRegex = (value) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const getProducts = async ({ name, shop, page, limit }) => {
   const filter = {};
-  const pageNumber = Number(page) || 1;
-  const pageSize = Number(limit) || 10;
+  const requestedPage = Number(page);
+  const requestedLimit = Number(limit);
+  const pageNumber = Number.isInteger(requestedPage) && requestedPage > 0
+    ? requestedPage
+    : 1;
+  const pageSize = Number.isInteger(requestedLimit) && requestedLimit > 0
+    ? Math.min(requestedLimit, 100)
+    : 10;
   const skip = (pageNumber - 1) * pageSize;
 
   if (name?.trim()) {
     filter.name = {
-      $regex: name.trim(),
+      $regex: escapeRegex(name.trim()),
       $options: "i",
     };
   }
   if (shop?.trim()) {
     filter.shop = {
-      $regex: shop.trim(),
+      $regex: escapeRegex(shop.trim()),
       $options: "i",
     };
   }
@@ -82,7 +91,7 @@ const patchProductPrice = async (productId, price, ownerId) => {
 const getCheapestProduct = async (name) => {
   const products = await Product.find({
     name: {
-      $regex: name.trim(),
+      $regex: escapeRegex(name.trim()),
       $options: "i",
     },
   }).sort({ price: 1 });

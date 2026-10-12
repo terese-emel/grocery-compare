@@ -38,6 +38,38 @@ describe("productService", () => {
     });
   });
 
+  test("normalizes unsafe pagination values and caps the page size", async () => {
+    const limit = jest.fn().mockResolvedValue([]);
+    const skip = jest.fn().mockReturnValue({ limit });
+    const sort = jest.fn().mockReturnValue({ skip });
+
+    Product.find.mockReturnValue({ sort });
+    Product.countDocuments.mockResolvedValue(0);
+
+    const result = await productService.getProducts({ page: "-2", limit: "500" });
+
+    expect(skip).toHaveBeenCalledWith(0);
+    expect(limit).toHaveBeenCalledWith(100);
+    expect(result.page).toBe(1);
+    expect(result.limit).toBe(100);
+  });
+
+  test("escapes regex characters in filters", async () => {
+    const limit = jest.fn().mockResolvedValue([]);
+    const skip = jest.fn().mockReturnValue({ limit });
+    const sort = jest.fn().mockReturnValue({ skip });
+
+    Product.find.mockReturnValue({ sort });
+    Product.countDocuments.mockResolvedValue(0);
+
+    await productService.getProducts({ name: "milk+", shop: "Coop." });
+
+    expect(Product.find).toHaveBeenCalledWith({
+      name: { $regex: "milk\\+", $options: "i" },
+      shop: { $regex: "Coop\\.", $options: "i" },
+    });
+  });
+
   test("filters products by name and shop", async () => {
     const limit = jest.fn().mockResolvedValue([]);
     const skip = jest.fn().mockReturnValue({ limit });

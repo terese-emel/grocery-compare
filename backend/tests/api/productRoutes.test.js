@@ -36,14 +36,18 @@ describe("Product API", () => {
   });
 
   test("GET /products?name=milk returns matching products", async () => {
-    productService.getProducts.mockResolvedValue([
-      { _id: "1", name: "Milk", shop: "ICA", price: 10.9, unit: "1L" },
-    ]);
+    productService.getProducts.mockResolvedValue({
+      items: [{ _id: "1", name: "Milk", shop: "ICA", price: 10.9, unit: "1L" }],
+      page: 1,
+      limit: 10,
+      total: 1,
+      pages: 1,
+    });
 
     const response = await authenticatedRequest.get("/products?name=milk");
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveLength(1);
+    expect(response.body.items).toHaveLength(1);
     expect(productService.getProducts).toHaveBeenCalledWith({
       name: "milk",
       shop: undefined,
@@ -53,12 +57,18 @@ describe("Product API", () => {
   });
 
   test("GET /products returns all products when no name is provided", async () => {
-    productService.getProducts.mockResolvedValue([]);
+    productService.getProducts.mockResolvedValue({
+      items: [],
+      page: 1,
+      limit: 10,
+      total: 0,
+      pages: 0,
+    });
 
     const response = await authenticatedRequest.get("/products");
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual([]);
+    expect(response.body.items).toEqual([]);
     expect(productService.getProducts).toHaveBeenCalledWith({
       name: undefined,
       shop: undefined,

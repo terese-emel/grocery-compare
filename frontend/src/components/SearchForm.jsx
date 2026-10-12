@@ -1,6 +1,8 @@
 const SearchForm = ({
   productName,
   setProductName,
+  shopName,
+  setShopName,
   handleSubmit,
   loading,
   clearSearch,
@@ -15,6 +17,15 @@ const SearchForm = ({
         placeholder="Try milk"
         value={productName}
         onChange={(event) => setProductName(event.target.value)}
+      />
+      <label htmlFor="shop">Shop name</label>
+
+      <input
+        id="shop"
+        type="text"
+        placeholder="Try Coop"
+        value={shopName}
+        onChange={(event) => setShopName(event.target.value)}
       />
 
       <button type="submit" disabled={loading}>
