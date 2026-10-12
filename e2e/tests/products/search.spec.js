@@ -7,20 +7,31 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("authenticated user can search for products", async ({ page }) => {
-  await page.route("**/products?name=milk", async (route) => {
+  await page.route("**/products*", async (route) => {
+    if (route.request().method() !== "GET" || !route.request().url().includes("name=milk")) {
+      await route.continue();
+      return;
+    }
+
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify([
-        {
-          _id: "product-1",
-          name: "Milk",
-          shop: "ICA",
-          price: 10.9,
-          unit: "1L",
-          owner: "e2e-user",
-        },
-      ]),
+      body: JSON.stringify({
+        items: [
+          {
+            _id: "product-1",
+            name: "Milk",
+            shop: "ICA",
+            price: 10.9,
+            unit: "1L",
+            owner: "e2e-user",
+          },
+        ],
+        page: 1,
+        limit: 10,
+        total: 1,
+        pages: 1,
+      }),
     });
   });
 

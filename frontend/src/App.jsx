@@ -15,6 +15,8 @@ function App() {
   const [productName, setProductName] = useState("");
   const [error, setError] = useState("");
   const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const { user, isAuthLoading, logout } = useAuth();
@@ -23,12 +25,9 @@ function App() {
     document.title = productName || "Grocery Compare";
   }, [productName]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
+  const loadProducts = async (page) => {
     setError("");
     setLoading(true);
-    setProducts([]);
 
     if (productName.trim() === "") {
       setError("Please enter a product name.");
@@ -43,15 +42,19 @@ function App() {
     }
 
     try {
-      const data = await searchProducts(productName);
+      const data = await searchProducts({ name: productName, page });
 
-      if (data.length === 0) {
+      if (data.items.length === 0) {
         setError("No products found.");
+        setProducts([]);
+        setPagination(null);
         setLoading(false);
         return;
       }
 
-      setProducts(data);
+      setProducts(data.items);
+      setPagination({ page: data.page, pages: data.pages });
+      setCurrentPage(data.page);
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -59,10 +62,18 @@ function App() {
     }
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setProducts([]);
+    await loadProducts(1);
+  };
+
   const clearSearch = () => {
     setProductName("");
     setProducts([]);
     setError("");
+    setPagination(null);
+    setCurrentPage(1);
   };
 
   const handleDelete = async (id) => {
@@ -156,6 +167,30 @@ function App() {
         onUpdate={handleUpdate}
         loggedInUser={user}
       />
+
+      {pagination && pagination.pages > 1 && (
+        <nav className="pagination-controls" aria-label="Product pages">
+          <button
+            className="button-secondary"
+            type="button"
+            onClick={() => loadProducts(currentPage - 1)}
+            disabled={loading || currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {pagination.page} of {pagination.pages}
+          </span>
+          <button
+            className="button-secondary"
+            type="button"
+            onClick={() => loadProducts(currentPage + 1)}
+            disabled={loading || currentPage === pagination.pages}
+          >
+            Next
+          </button>
+        </nav>
+      )}
       <AddProductForm onCreated={handleCreated} />
     </main>
   );

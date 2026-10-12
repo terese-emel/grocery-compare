@@ -1,7 +1,9 @@
 import { apiRequest } from "./apiClient";
 
-export function searchProducts(name) {
-  return apiRequest(`/products?name=${encodeURIComponent(name)}`);
+export function searchProducts({ name, page = 1, limit = 10 }) {
+  return apiRequest(
+    `/products?name=${encodeURIComponent(name)}&page=${page}&limit=${limit}`,
+  );
 }
 
 export function getProductById(id) {

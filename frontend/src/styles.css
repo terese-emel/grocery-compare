@@ -141,6 +141,14 @@ button:disabled {
   background-color: #206b38;
 }
 
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+
 section {
   margin-top: 32px;
   text-align: center;

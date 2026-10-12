@@ -12,11 +12,22 @@ const product = {
 };
 
 async function mockProductSearch(page) {
-  await page.route("**/products?name=milk", async (route) => {
+  await page.route("**/products*", async (route) => {
+    if (route.request().method() !== "GET" || !route.request().url().includes("name=milk")) {
+      await route.continue();
+      return;
+    }
+
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify([product]),
+      body: JSON.stringify({
+        items: [product],
+        page: 1,
+        limit: 10,
+        total: 1,
+        pages: 1,
+      }),
     });
   });
 }
