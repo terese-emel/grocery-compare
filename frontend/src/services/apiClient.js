@@ -2,6 +2,16 @@ import { getAuthToken, logout } from "./authApi";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+export class ApiError extends Error {
+  constructor(message, { code, requestId, status } = {}) {
+    super(message);
+    this.name = "ApiError";
+    this.code = code;
+    this.requestId = requestId;
+    this.status = status;
+  }
+}
+
 export async function apiRequest(path, options = {}) {
   const token = getAuthToken();
 
@@ -21,7 +31,12 @@ export async function apiRequest(path, options = {}) {
   }
 
   if (!response.ok) {
-    throw new Error(data.message || "Request failed");
+    throw new ApiError(data.error?.message || data.message || "Request failed", {
+      code: data.error?.code,
+      requestId:
+        data.error?.requestId || response.headers?.get?.("X-Request-Id"),
+      status: response.status,
+    });
   }
 
   return data;

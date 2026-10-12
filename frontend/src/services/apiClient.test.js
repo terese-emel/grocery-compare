@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { apiRequest } from "./apiClient";
+import { apiRequest, ApiError } from "./apiClient";
 import { getAuthToken, logout } from "./authApi";
 
 vi.mock("./authApi", () => ({
@@ -60,12 +60,24 @@ describe("apiRequest", () => {
     fetch.mockResolvedValue({
       ok: false,
       status: 400,
-      json: vi.fn().mockResolvedValue({ message: "Invalid product data" }),
+      json: vi.fn().mockResolvedValue({
+        message: "Invalid product data",
+        error: {
+          code: "INVALID_REQUEST",
+          message: "Invalid product data",
+          requestId: "request-123",
+        },
+      }),
     });
 
-    await expect(apiRequest("/products")).rejects.toThrow(
-      "Invalid product data",
-    );
+    const request = apiRequest("/products");
+    await expect(request).rejects.toThrow("Invalid product data");
+    await expect(request).rejects.toBeInstanceOf(ApiError);
+    await expect(request).rejects.toMatchObject({
+      code: "INVALID_REQUEST",
+      requestId: "request-123",
+      status: 400,
+    });
   });
 
   it("logs out when the token is rejected", async () => {
