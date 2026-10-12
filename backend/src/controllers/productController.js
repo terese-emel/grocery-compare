@@ -6,7 +6,14 @@ const {
 } = require("../validation/productValidation");
 
 const getProducts = async (ctx) => {
-  const products = await productService.getProducts(ctx.query.name);
+  const { name, shop, page, limit } = ctx.query;
+
+  const products = await productService.getProducts({
+    name,
+    shop,
+    page,
+    limit,
+  });
 
   ctx.status = 200;
   ctx.body = products;

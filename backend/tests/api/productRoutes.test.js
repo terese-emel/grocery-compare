@@ -44,7 +44,12 @@ describe("Product API", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1);
-    expect(productService.getProducts).toHaveBeenCalledWith("milk");
+    expect(productService.getProducts).toHaveBeenCalledWith({
+      name: "milk",
+      shop: undefined,
+      page: undefined,
+      limit: undefined,
+    });
   });
 
   test("GET /products returns all products when no name is provided", async () => {
@@ -54,7 +59,12 @@ describe("Product API", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual([]);
-    expect(productService.getProducts).toHaveBeenCalledWith(undefined);
+    expect(productService.getProducts).toHaveBeenCalledWith({
+      name: undefined,
+      shop: undefined,
+      page: undefined,
+      limit: undefined,
+    });
   });
 
   test("GET /products/cheapest returns the cheapest products", async () => {

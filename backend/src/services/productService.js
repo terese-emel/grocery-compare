@@ -1,16 +1,37 @@
 const Product = require("../models/Product");
 
-const getProducts = async (name) => {
-  const filter = name?.trim()
-    ? {
-        name: {
-          $regex: name.trim(),
-          $options: "i",
-        },
-      }
-    : {};
+const getProducts = async ({ name, shop, page, limit }) => {
+  const filter = {};
+  const pageNumber = Number(page) || 1;
+  const pageSize = Number(limit) || 10;
+  const skip = (pageNumber - 1) * pageSize;
 
-  return Product.find(filter).sort({ price: 1 });
+  if (name?.trim()) {
+    filter.name = {
+      $regex: name.trim(),
+      $options: "i",
+    };
+  }
+  if (shop?.trim()) {
+    filter.shop = {
+      $regex: shop.trim(),
+      $options: "i",
+    };
+  }
+  const total = await Product.countDocuments(filter);
+
+  const products = await Product.find(filter)
+    .sort({ price: 1 })
+    .skip(skip)
+    .limit(pageSize);
+
+  return {
+    items: products,
+    page: pageNumber,
+    limit: pageSize,
+    total,
+    pages: Math.ceil(total / pageSize),
+  };
 };
 
 const getProductById = async (productId) => {

@@ -97,8 +97,14 @@ describe("Product API integration", () => {
       .set("Authorization", `Bearer ${authToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveLength(2);
-    expect(response.body[0].shop).toBe("ICA");
-    expect(response.body[1].shop).toBe("Coop");
+    expect(response.body.items).toHaveLength(2);
+    expect(response.body.items[0].shop).toBe("ICA");
+    expect(response.body.items[1].shop).toBe("Coop");
+    expect(response.body).toMatchObject({
+      page: 1,
+      limit: 10,
+      total: 2,
+      pages: 1,
+    });
   });
 });
