@@ -43,7 +43,7 @@ function ProductList({ products, onDelete, onUpdate, loggedInUser }) {
 
   return (
     <section>
-      <h2>{products[0].name}</h2>
+      <h2>Matching products</h2>
 
       {products.map((product) => {
         const isCheapest = product.price === cheapestPrice;
