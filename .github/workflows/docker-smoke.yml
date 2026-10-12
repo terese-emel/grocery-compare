@@ -20,6 +20,8 @@ jobs:
 
       - name: Build and start services
         run: docker compose up --build --detach
+        env:
+          JWT_SECRET: ci-only-test-secret
 
       - name: Wait for backend health endpoint
         run: |

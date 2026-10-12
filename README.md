@@ -17,20 +17,39 @@ Grocery Compare is a full-stack learning project for comparing grocery prices ac
 - OpenAPI documentation and Swagger UI
 - Automated backend, frontend, and browser tests
 
-## Architecture
+## Application flow
 
 ```text
-React frontend (5173)
-        ↓ HTTP / fetch
-Koa REST API (3000)
-        ↓ Mongoose
+Browser
+  ↓
+React frontend
+  ↓ fetch with JWT
+Koa API
+  ↓ routes → controllers → services → models
+Mongoose
+  ↓
 MongoDB
 ```
 
-Backend requests flow through routes, controllers, services, and models:
+Authentication flow:
 
 ```text
-route → controller → service → Product model → MongoDB
+Register or login → JWT returned → token stored in browser
+  ↓
+Authenticated requests include Authorization: Bearer <token>
+  ↓
+Authentication middleware identifies the user
+  ↓
+Ownership checks protect product updates and deletions
+```
+
+Docker flow:
+
+```text
+docker compose
+  ├── MongoDB
+  ├── Koa backend
+  └── Nginx frontend
 ```
 
 ## API endpoints
@@ -89,13 +108,13 @@ grocery-compare/
 │   │   └── styles.css
 │   ├── .env.local
 │   └── package.json
-├── docker-compose.yml       # Local MongoDB, backend, and frontend services
+├── docker-compose.yml
 ├── e2e/
-│   ├── fixtures/            # Shared authentication test setup
-│   ├── pages/               # Playwright Page Object Model classes
+│   ├── fixtures/
+│   ├── pages/
 │   ├── tests/
-│   │   ├── auth/            # Login, registration, and logout scenarios
-│   │   └── products/         # Search and create-product scenarios
+│   │   ├── auth/
+│   │   └── products/
 │   ├── playwright.config.js
 │   └── package.json
 ├── .gitignore
@@ -117,6 +136,8 @@ Set the database name in `backend/.env`:
 ```env
 MONGODB_DATABASE=grocery_compare
 ```
+
+The backend also accepts `MONGODB_URI`, which is used by Docker Compose for the local MongoDB service.
 
 The frontend uses `frontend/.env.local`:
 
@@ -150,11 +171,14 @@ Run the complete application with Docker:
 
 ```bash
 cp .env.example .env
-# Edit .env and replace the placeholder JWT_SECRET.
 docker compose up --build
 ```
 
+Edit `.env` before starting the stack and replace the placeholder `JWT_SECRET`.
+
 Open the containerized frontend at `http://localhost:8080`. Docker runs MongoDB on an internal network, the backend on port `3000`, and the frontend through Nginx on port `8080`.
+
+The frontend API URL is supplied during the image build with the `VITE_API_URL` build argument. Rebuild the frontend image when changing the API URL.
 
 Compose uses health checks to coordinate startup: MongoDB must respond to a ping before the backend starts, and the backend must report healthy before the frontend starts.
 The root `.env` file is ignored by Git and supplies the local JWT signing secret. Never commit real secrets; use your deployment platform's secret manager in production.
@@ -225,8 +249,7 @@ npx playwright install chromium
 npm test
 ```
 
-Playwright starts the frontend on port `4173` and tests the login flow with mocked authentication responses.
-The E2E suite uses Page Object Model classes and currently covers registration, login, logout, product search, and adding a product. API responses are mocked so the browser tests remain deterministic.
+Playwright starts the frontend on port `4173` and uses mocked API responses. The E2E suite uses Page Object Model classes and covers registration, login, logout, validation errors, product search, product creation, and ownership authorization.
 
 Run the browser tests with the visible browser:
 
@@ -240,8 +263,7 @@ View the latest Playwright report:
 npm run report
 ```
 
-GitHub Actions runs the Playwright suite automatically through `.github/workflows/e2e-tests.yml`.
-The container security workflow builds both Docker images and scans them for high and critical vulnerabilities with Trivy.
+GitHub Actions runs backend tests, frontend tests, OpenAPI validation, Playwright tests, Docker smoke tests, and Trivy container scans on pushes and pull requests.
 
 ## Learning path
 
