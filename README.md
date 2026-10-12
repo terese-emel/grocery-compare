@@ -47,6 +47,21 @@ Browser automatically includes the cookie with API requests
 Authentication middleware identifies the user
   ↓
 Ownership checks protect product updates and deletions
+
+Cookie authentication also uses CSRF protection:
+
+```text
+Backend sets csrf_token cookie
+  ↓
+Frontend reads the non-HTTP-only CSRF cookie
+  ↓
+State-changing requests send X-CSRF-Token
+  ↓
+Backend compares the cookie and header values
+```
+
+The CSRF header is required for authenticated `POST`, `PUT`, `PATCH`, and
+`DELETE` requests. Safe `GET` requests do not require it.
 ```
 
 Docker flow:
