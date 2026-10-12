@@ -32,7 +32,7 @@ jobs:
         run: npm run lint
 
       - name: Run frontend tests
-        run: npm run test:run
+        run: npm run test:coverage
 
       - name: Build frontend
         run: npm run build

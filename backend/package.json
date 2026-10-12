@@ -9,6 +9,7 @@
     "start": "node --env-file=.env src/index.js",
     "seed:pagination": "node --env-file=.env scripts/seedPagination.js",
     "test": "jest --runInBand",
+    "test:coverage": "jest --runInBand --coverage",
     "test:unit": "jest tests/unit --runInBand",
     "test:api": "jest tests/api --runInBand",
     "test:integration": "jest tests/integration --runInBand",
