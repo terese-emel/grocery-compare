@@ -123,6 +123,18 @@ grocery-compare/
 
 ## Configuration
 
+Use separate databases and credentials for each environment:
+
+```text
+Development  grocery_compare
+Staging      grocery_compare_staging
+Production   grocery_compare_production
+```
+
+Keep staging and production MongoDB users separate. Store their connection strings,
+JWT secrets, and frontend URLs in the deployment platform's environment settings.
+Never commit real `.env` files or credentials.
+
 The backend reads MongoDB credentials from exported Zsh variables:
 
 ```bash
@@ -137,7 +149,17 @@ Set the database name in `backend/.env`:
 MONGODB_DATABASE=grocery_compare
 ```
 
-The backend also accepts `MONGODB_URI`, which is used by Docker Compose for the local MongoDB service.
+Docker Compose uses the local MongoDB container by default. To use MongoDB Atlas instead,
+set `MONGODB_URI` in the root `.env` file; Compose will use that value automatically.
+
+For a local backend, copy the example configuration:
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+For staging and production, configure `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`,
+and `FRONTEND_URL` in the hosting platform. Do not upload `.env` files.
 
 The frontend uses `frontend/.env.local`:
 
@@ -176,6 +198,15 @@ docker compose up --build
 
 Edit `.env` before starting the stack and replace the placeholder `JWT_SECRET`.
 
+To connect the Docker backend to MongoDB Atlas, set:
+
+```env
+MONGODB_URI=mongodb+srv://USERNAME:PASSWORD@HOST/grocery_compare
+```
+
+To use the local MongoDB container again, remove `MONGODB_URI` from the root `.env`
+or set it to `mongodb://mongo:27017/grocery_compare`.
+
 Open the containerized frontend at `http://localhost:8080`. Docker runs MongoDB on an internal network, the backend on port `3000`, and the frontend through Nginx on port `8080`.
 
 The frontend API URL is supplied during the image build with the `VITE_API_URL` build argument. Rebuild the frontend image when changing the API URL.
@@ -183,6 +214,23 @@ The frontend API URL is supplied during the image build with the `VITE_API_URL` 
 Compose uses health checks to coordinate startup: MongoDB must respond to a ping before the backend starts, and the backend must report healthy before the frontend starts.
 The root `.env` file is ignored by Git and supplies the local JWT signing secret. Never commit real secrets; use your deployment platform's secret manager in production.
 The backend container runs as the non-root `node` user.
+
+Seed pagination data in staging with:
+
+```bash
+cd backend
+npm run seed:pagination
+```
+
+This creates 25 products for `pagination-demo@example.com`, which produces three
+pages with the default page size of 10. The script only removes products owned by
+that demo user. Production seeding is blocked unless explicitly enabled:
+
+```bash
+NODE_ENV=production npm run seed:pagination -- --production
+```
+
+Verify the MongoDB target before using the production flag.
 
 Check the service health with:
 
