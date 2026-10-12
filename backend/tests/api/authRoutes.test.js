@@ -129,4 +129,18 @@ describe("Authentication API", () => {
       message: "Authentication required",
     });
   });
+
+  test("returns a request ID header", async () => {
+    const response = await request(app.callback()).get("/health");
+
+    expect(response.headers["x-request-id"]).toBeDefined();
+  });
+
+  test("preserves a supplied request ID", async () => {
+    const response = await request(app.callback())
+      .get("/health")
+      .set("X-Request-Id", "test-request-123");
+
+    expect(response.headers["x-request-id"]).toBe("test-request-123");
+  });
 });
