@@ -61,17 +61,8 @@ function getCsrfToken() {
 }
 
 export async function getCurrentUser() {
-  const token = getAuthToken();
-
-  if (!token) {
-    return null;
-  }
-
   const response = await fetch(`${API_URL}/auth/me`, {
     credentials: "include",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   if (!response.ok) {
