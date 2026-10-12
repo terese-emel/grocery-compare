@@ -64,7 +64,7 @@ function App() {
       setPagination({ page: data.page, pages: data.pages });
       setCurrentPage(data.page);
     } catch (requestError) {
-      setError(requestError.message);
+      setError(requestError);
     } finally {
       setLoading(false);
     }
@@ -93,7 +93,7 @@ function App() {
         currentProducts.filter((product) => product._id !== id),
       );
     } catch (requestError) {
-      setError(requestError.message);
+      setError(requestError);
     }
   };
 
