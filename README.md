@@ -149,12 +149,15 @@ Open the frontend at `http://localhost:5173`. The API runs at `http://localhost:
 Run the complete application with Docker:
 
 ```bash
+cp .env.example .env
+# Edit .env and replace the placeholder JWT_SECRET.
 docker compose up --build
 ```
 
 Open the containerized frontend at `http://localhost:8080`. Docker runs MongoDB on an internal network, the backend on port `3000`, and the frontend through Nginx on port `8080`.
 
 Compose uses health checks to coordinate startup: MongoDB must respond to a ping before the backend starts, and the backend must report healthy before the frontend starts.
+The root `.env` file is ignored by Git and supplies the local JWT signing secret. Never commit real secrets; use your deployment platform's secret manager in production.
 
 Check the service health with:
 

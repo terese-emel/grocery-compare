@@ -18,7 +18,7 @@ services:
       MONGODB_URI: mongodb://mongo:27017/grocery_compare
       PORT: 3000
       FRONTEND_URL: http://localhost:8080
-      JWT_SECRET: docker-development-secret-change-me
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in the root .env file}
       JWT_EXPIRES_IN: 1d
     depends_on:
       mongo:
