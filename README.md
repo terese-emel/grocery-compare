@@ -241,6 +241,7 @@ npm run report
 ```
 
 GitHub Actions runs the Playwright suite automatically through `.github/workflows/e2e-tests.yml`.
+The container security workflow builds both Docker images and scans them for high and critical vulnerabilities with Trivy.
 
 ## Learning path
 

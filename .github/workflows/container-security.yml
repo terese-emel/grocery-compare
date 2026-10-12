@@ -1,0 +1,44 @@
+name: Container security
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  scan-images:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Build backend image
+        run: docker build --tag grocery-compare-backend:ci backend
+
+      - name: Build frontend image
+        run: docker build --tag grocery-compare-frontend:ci --build-arg VITE_API_URL=http://localhost:3000 frontend
+
+      - name: Scan backend image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: grocery-compare-backend:ci
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
+
+      - name: Scan frontend image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: grocery-compare-frontend:ci
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
