@@ -78,6 +78,7 @@ function App() {
 
   const clearSearch = () => {
     setProductName("");
+    setShopName("");
     setProducts([]);
     setError("");
     setPagination(null);
