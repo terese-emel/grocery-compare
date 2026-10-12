@@ -148,6 +148,21 @@ describe("Authentication API", () => {
     expect(response.body.error.requestId).toBe(response.headers["x-request-id"]);
   });
 
+  test("GET /auth/me rejects an invalid token", async () => {
+    const response = await request(app.callback())
+      .get("/auth/me")
+      .set("Authorization", "Bearer invalid-token");
+
+    expect(response.status).toBe(401);
+    expect(response.body).toMatchObject({
+      message: "Invalid or expired token",
+      error: {
+        code: "INVALID_TOKEN",
+        message: "Invalid or expired token",
+      },
+    });
+  });
+
   test("returns a request ID header", async () => {
     const response = await request(app.callback()).get("/health");
 
