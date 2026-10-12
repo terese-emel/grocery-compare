@@ -31,5 +31,8 @@ jobs:
       - name: Run lint
         run: npm run lint
 
+      - name: Validate OpenAPI documentation
+        run: npm run api:lint
+
       - name: Run tests
         run: npm test
