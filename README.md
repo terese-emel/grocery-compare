@@ -158,6 +158,7 @@ Open the containerized frontend at `http://localhost:8080`. Docker runs MongoDB 
 
 Compose uses health checks to coordinate startup: MongoDB must respond to a ping before the backend starts, and the backend must report healthy before the frontend starts.
 The root `.env` file is ignored by Git and supplies the local JWT signing secret. Never commit real secrets; use your deployment platform's secret manager in production.
+The backend container runs as the non-root `node` user.
 
 Check the service health with:
 
