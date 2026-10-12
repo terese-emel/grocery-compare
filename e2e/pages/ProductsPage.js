@@ -19,4 +19,19 @@ export class ProductsPage {
     await this.page.getByLabel("Unit").fill(unit);
     await this.page.getByRole("button", { name: "Add Product" }).click();
   }
+
+  productCard(shop) {
+    return this.page.locator(".product-card").filter({ hasText: shop });
+  }
+
+  async editProductPrice(shop, price) {
+    const card = this.productCard(shop);
+    await card.getByRole("button", { name: "Edit" }).click();
+    await card.locator('input[type="number"]').fill(String(price));
+    await card.getByRole("button", { name: "Save" }).click();
+  }
+
+  async deleteProduct(shop) {
+    await this.productCard(shop).getByRole("button", { name: "Delete" }).click();
+  }
 }
