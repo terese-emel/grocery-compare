@@ -49,4 +49,21 @@ describe("ProductList ownership controls", () => {
     expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Delete" })).not.toBeInTheDocument();
   });
+
+  it("shows the product name on every result card", () => {
+    const { container } = render(
+      <ProductList
+        products={[
+          { ...products[0], name: "Milk" },
+          { ...products[1], name: "Oat Milk" },
+        ]}
+        loggedInUser={{ id: "user-3" }}
+        onDelete={vi.fn()}
+        onUpdate={vi.fn()}
+      />,
+    );
+
+    expect(container.querySelectorAll(".product-name")).toHaveLength(2);
+    expect(screen.getByText("Oat Milk")).toBeInTheDocument();
+  });
 });

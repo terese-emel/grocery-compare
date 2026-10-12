@@ -56,6 +56,7 @@ function ProductList({ products, onDelete, onUpdate, loggedInUser }) {
             className={`product-card ${isCheapest ? "cheapest" : ""}`}
             key={product._id}
           >
+            <span className="product-name">{product.name}</span>
             <span>{product.shop}</span>
 
             {isEditing && canManage ? (

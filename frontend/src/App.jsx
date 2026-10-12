@@ -30,13 +30,16 @@ function App() {
     setError("");
     setLoading(true);
 
-    if (productName.trim() === "") {
-      setError("Please enter a product name.");
+    const trimmedProductName = productName.trim();
+    const trimmedShopName = shopName.trim();
+
+    if (trimmedProductName === "" && trimmedShopName === "") {
+      setError("Please enter a product name or shop name.");
       setLoading(false);
       return;
     }
 
-    if (productName.trim().length < 2) {
+    if (trimmedProductName !== "" && trimmedProductName.length < 2) {
       setError("Please enter at least 2 characters.");
       setLoading(false);
       return;
