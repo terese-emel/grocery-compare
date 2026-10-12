@@ -66,7 +66,7 @@ export async function getCurrentUser() {
   });
 
   if (!response.ok) {
-    logout();
+    void logout().catch(() => {});
     return null;
   }
 

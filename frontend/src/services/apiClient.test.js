@@ -55,6 +55,28 @@ describe("apiRequest", () => {
     );
   });
 
+  it("adds the CSRF token from the cookie", async () => {
+    getAuthToken.mockReturnValue(null);
+    document.cookie = "csrf_token=test-csrf-token";
+    fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ status: "ok" }),
+    });
+
+    await apiRequest("/products", { method: "POST" });
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/products"),
+      expect.objectContaining({
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": "test-csrf-token",
+        },
+      }),
+    );
+  });
+
   it("throws the API error message", async () => {
     getAuthToken.mockReturnValue("jwt-token");
     fetch.mockResolvedValue({

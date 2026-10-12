@@ -62,20 +62,20 @@ const AddProductForm = ({ onCreated }) => {
     <section>
       <h2>Add Product</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="productName">Product name</label>
+        <label htmlFor="add-product-name">Product name</label>
 
         <input
-          id="productName"
+          id="add-product-name"
           type="text"
           placeholder="Product name"
           value={productName}
           onChange={(event) => setProductName(event.target.value)}
         />
 
-        <label htmlFor="shop">Shop Name</label>
+        <label htmlFor="add-shop">Shop Name</label>
 
         <input
-          id="shop"
+          id="add-shop"
           type="text"
           placeholder="Shop name"
           value={shopName}

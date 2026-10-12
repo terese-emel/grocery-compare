@@ -12,9 +12,18 @@ export class ProductsPage {
     await this.page.getByRole("button", { name: "Search" }).click();
   }
 
+  async searchByShop(shopName) {
+    await this.page.getByLabel("Shop name", { exact: true }).fill(shopName);
+    await this.page.getByRole("button", { name: "Search" }).click();
+  }
+
+  async nextPage() {
+    await this.page.getByRole("button", { name: "Next" }).click();
+  }
+
   async addProduct({ name, shop, price, unit }) {
     await this.addProductNameInput.fill(name);
-    await this.page.getByLabel("Shop Name").fill(shop);
+    await this.page.getByLabel("Shop Name", { exact: true }).last().fill(shop);
     await this.page.getByLabel("Price").fill(String(price));
     await this.page.getByLabel("Unit").fill(unit);
     await this.page.getByRole("button", { name: "Add Product" }).click();
