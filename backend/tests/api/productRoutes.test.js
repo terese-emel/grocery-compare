@@ -50,9 +50,9 @@ describe("Product API", () => {
     expect(response.body.items).toHaveLength(1);
     expect(productService.getProducts).toHaveBeenCalledWith({
       name: "milk",
-      shop: undefined,
-      page: undefined,
-      limit: undefined,
+      shop: "",
+      page: 1,
+      limit: 10,
     });
   });
 
@@ -70,10 +70,10 @@ describe("Product API", () => {
     expect(response.status).toBe(200);
     expect(response.body.items).toEqual([]);
     expect(productService.getProducts).toHaveBeenCalledWith({
-      name: undefined,
-      shop: undefined,
-      page: undefined,
-      limit: undefined,
+      name: "",
+      shop: "",
+      page: 1,
+      limit: 10,
     });
   });
 

@@ -1,50 +1,41 @@
 const authService = require("../services/authService");
+const { loginSchema, registerSchema } = require("../validation/schemas");
+const { parseSchema } = require("../validation/parse");
 
 async function register(ctx) {
-  const { email, password } = ctx.request.body || {};
+  const result = parseSchema(registerSchema, ctx.request.body || {});
 
-  if (
-    typeof email !== "string" ||
-    typeof password !== "string" ||
-    !email.trim() ||
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-  ) {
+  if (result.error) {
     ctx.status = 400;
-    ctx.body = {
-      message: "A valid email and password are required",
-    };
+    ctx.body = { message: result.error };
     return;
   }
 
-  if (password.length < 8) {
-    ctx.status = 400;
-    ctx.body = {
-      message: "Password must contain at least 8 characters",
-    };
-    return;
-  }
-
-  const result = await authService.registerUser(email, password);
+  const registeredUser = await authService.registerUser(
+    result.data.email,
+    result.data.password,
+  );
 
   ctx.status = 201;
-  ctx.body = result;
+  ctx.body = registeredUser;
 }
 
 async function login(ctx) {
-  const { email, password } = ctx.request.body || {};
+  const result = parseSchema(loginSchema, ctx.request.body || {});
 
-  if (typeof email !== "string" || typeof password !== "string" || !email.trim()) {
+  if (result.error) {
     ctx.status = 400;
-    ctx.body = {
-      message: "Email and password are required",
-    };
+    ctx.body = { message: result.error };
     return;
   }
 
-  const result = await authService.loginUser(email, password);
+  const loggedInUser = await authService.loginUser(
+    result.data.email,
+    result.data.password,
+  );
 
   ctx.status = 200;
-  ctx.body = result;
+  ctx.body = loggedInUser;
 }
 
 async function getCurrentUser(ctx) {
