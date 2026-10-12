@@ -9,11 +9,15 @@ Grocery Compare is a full-stack learning project for comparing grocery prices ac
 - Find the cheapest product, including ties
 - Create, update, and delete products through the API
 - Validate required product fields and non-negative prices
+- Reusable Zod validation middleware for request bodies and query parameters
+- Paginated product search with name and shop filters
+- MongoDB indexes for search, price sorting, and ownership checks
 - React frontend with loading and error states
 - React controls for adding, editing, and deleting products
 - MongoDB persistence through Mongoose
 - JWT authentication and product ownership authorization
-- User registration, login, session restoration, and logout
+- HTTP-only cookie authentication with session restoration and logout
+- Structured API errors with stable error codes and request IDs
 - OpenAPI documentation and Swagger UI
 - Automated backend, frontend, and browser tests
 
@@ -23,8 +27,10 @@ Grocery Compare is a full-stack learning project for comparing grocery prices ac
 Browser
   ↓
 React frontend
-  ↓ fetch with JWT
+  ↓ fetch with credentials: include
 Koa API
+  ↓ request ID and error handling middleware
+  ↓ Zod validation middleware
   ↓ routes → controllers → services → models
 Mongoose
   ↓
@@ -34,9 +40,9 @@ MongoDB
 Authentication flow:
 
 ```text
-Register or login → JWT returned → token stored in browser
+Register or login → backend sets an HTTP-only auth cookie
   ↓
-Authenticated requests include Authorization: Bearer <token>
+Browser automatically includes the cookie with API requests
   ↓
 Authentication middleware identifies the user
   ↓
@@ -56,8 +62,10 @@ docker compose
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | `/products` | Get all products |
+| GET | `/products` | Get paginated products |
 | GET | `/products?name=milk` | Search products by name |
+| GET | `/products?shop=Coop` | Search products by shop |
+| GET | `/products?name=milk&shop=Coop&page=1&limit=10` | Filter and paginate products |
 | GET | `/products/cheapest?name=milk` | Get the cheapest matching product(s) |
 | GET | `/products/:id` | Get one product by ID |
 | POST | `/products` | Create a product |
@@ -65,8 +73,9 @@ docker compose
 | PATCH | `/products/:id` | Update a product's price |
 | DELETE | `/products/:id` | Delete a product |
 | GET | `/health` | Check API and database health |
-| POST | `/auth/register` | Register a user and return a JWT |
-| POST | `/auth/login` | Log in and return a JWT |
+| POST | `/auth/register` | Register a user and set an HTTP-only auth cookie |
+| POST | `/auth/login` | Log in and set an HTTP-only auth cookie |
+| POST | `/auth/logout` | Clear the auth cookie |
 | GET | `/auth/me` | Return the authenticated user |
 
 Example product:
@@ -91,6 +100,8 @@ grocery-compare/
 │   │   ├── models/
 │   │   ├── routes/
 │   │   ├── services/
+│   │   ├── utils/
+│   │   └── validation/
 │   │   └── index.js
 │   ├── tests/
 │   │   ├── unit/

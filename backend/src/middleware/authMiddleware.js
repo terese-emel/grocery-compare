@@ -3,13 +3,14 @@ const { sendError } = require("../utils/apiError");
 
 async function requireAuth(ctx, next) {
   const authorization = ctx.get("Authorization");
+  const cookieToken = ctx.cookies.get("auth_token");
 
-  if (!authorization || !authorization.startsWith("Bearer ")) {
+  if (!cookieToken && (!authorization || !authorization.startsWith("Bearer "))) {
     sendError(ctx, 401, "AUTHENTICATION_REQUIRED", "Authentication required");
     return;
   }
 
-  const token = authorization.slice("Bearer ".length);
+  const token = cookieToken || authorization.slice("Bearer ".length);
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);

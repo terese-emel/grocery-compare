@@ -10,7 +10,7 @@ servers:
     description: Local development server
 
 security:
-  - bearerAuth: []
+  - cookieAuth: []
 
 tags:
   - name: Health
@@ -109,6 +109,21 @@ paths:
                 $ref: "#/components/schemas/CurrentUserResponse"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+  /auth/logout:
+    post:
+      security: []
+      operationId: logoutUser
+      tags:
+        - Authentication
+      summary: Log out the current user
+      responses:
+        "200":
+          description: User logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
         "503":
           description: API is running but database is unavailable
           content:
@@ -344,10 +359,10 @@ paths:
 
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: auth_token
 
   schemas:
     AuthInput:
@@ -370,13 +385,9 @@ components:
       type: object
       required:
         - user
-        - token
       properties:
         user:
           $ref: "#/components/schemas/User"
-        token:
-          type: string
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
     User:
       type: object

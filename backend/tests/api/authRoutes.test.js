@@ -34,8 +34,8 @@ describe("Authentication API", () => {
         id: "user-1",
         email: "test@example.com",
       },
-      token: "registration-token",
     });
+    expect(response.headers["set-cookie"][0]).toContain("auth_token=");
     expect(authService.registerUser).toHaveBeenCalledWith(
       "test@example.com",
       "password123",
@@ -57,7 +57,7 @@ describe("Authentication API", () => {
     expect(authService.registerUser).not.toHaveBeenCalled();
   });
 
-  test("POST /auth/login returns a token", async () => {
+  test("POST /auth/login sets an authentication cookie", async () => {
     authService.loginUser.mockResolvedValue({
       user: {
         id: "user-1",
@@ -74,7 +74,11 @@ describe("Authentication API", () => {
       });
 
     expect(response.status).toBe(200);
-    expect(response.body.token).toBe("login-token");
+    expect(response.body.user).toEqual({
+      id: "user-1",
+      email: "test@example.com",
+    });
+    expect(response.headers["set-cookie"][0]).toContain("auth_token=");
     expect(authService.loginUser).toHaveBeenCalledWith(
       "test@example.com",
       "password123",

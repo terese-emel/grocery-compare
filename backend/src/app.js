@@ -36,7 +36,7 @@ app.use(requestId);
 app.use(errorHandler);
 app.use(helmet());
 app.use(bodyParser({ jsonLimit: "100kb" }));
-app.use(cors({ origin: frontendUrl }));
+app.use(cors({ origin: frontendUrl, credentials: true }));
 app.use(apiLimiter);
 app.use(authRoutes.routes());
 app.use(authRoutes.allowedMethods());
