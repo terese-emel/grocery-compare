@@ -89,6 +89,7 @@ grocery-compare/
 │   │   └── styles.css
 │   ├── .env.local
 │   └── package.json
+├── docker-compose.yml       # Local MongoDB, backend, and frontend services
 ├── e2e/
 │   ├── fixtures/            # Shared authentication test setup
 │   ├── pages/               # Playwright Page Object Model classes
@@ -144,6 +145,20 @@ npm run dev
 ```
 
 Open the frontend at `http://localhost:5173`. The API runs at `http://localhost:3000`.
+
+Run the complete application with Docker:
+
+```bash
+docker compose up --build
+```
+
+Open the containerized frontend at `http://localhost:8080`. Docker runs MongoDB on an internal network, the backend on port `3000`, and the frontend through Nginx on port `8080`.
+
+Stop the containers with:
+
+```bash
+docker compose down
+```
 
 To test the API in VS Code, open `backend/requests.http` with the REST Client extension.
 
