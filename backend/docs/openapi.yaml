@@ -492,10 +492,27 @@ components:
       type: object
       required:
         - message
+        - error
       properties:
         message:
           type: string
           example: Invalid product data
+        error:
+          type: object
+          required:
+            - code
+            - message
+            - requestId
+          properties:
+            code:
+              type: string
+              example: INVALID_REQUEST
+            message:
+              type: string
+              example: Invalid product data
+            requestId:
+              type: string
+              format: uuid
 
     HealthResponse:
       type: object

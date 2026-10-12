@@ -96,8 +96,12 @@ describe("Product ownership", () => {
       .send({ price: 1 });
 
     expect(response.status).toBe(404);
-    expect(response.body).toEqual({
+    expect(response.body).toMatchObject({
       message: "Product not found or you do not have permission to modify it",
+      error: {
+        code: "PRODUCT_NOT_FOUND_OR_UNAUTHORIZED",
+        message: "Product not found or you do not have permission to modify it",
+      },
     });
 
     const unchangedProduct = await Product.findById(product._id);

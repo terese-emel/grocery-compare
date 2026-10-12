@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const productService = require("../services/productService");
+const { sendError } = require("../utils/apiError");
 const getProducts = async (ctx) => {
   const products = await productService.getProducts(ctx.state.validated.query);
 
@@ -11,16 +12,14 @@ const getProductById = async (ctx) => {
   const productId = ctx.params.id;
 
   if (!mongoose.isValidObjectId(productId)) {
-    ctx.status = 400;
-    ctx.body = { message: "Invalid product ID" };
+    sendError(ctx, 400, "INVALID_PRODUCT_ID", "Invalid product ID");
     return;
   }
 
   const product = await productService.getProductById(productId);
 
   if (!product) {
-    ctx.status = 404;
-    ctx.body = { message: "Product not found" };
+    sendError(ctx, 404, "PRODUCT_NOT_FOUND", "Product not found");
     return;
   }
 
@@ -47,8 +46,7 @@ const updateProduct = async (ctx) => {
   const productId = ctx.params.id;
 
   if (!mongoose.isValidObjectId(productId)) {
-    ctx.status = 400;
-    ctx.body = { message: "Invalid product ID" };
+    sendError(ctx, 400, "INVALID_PRODUCT_ID", "Invalid product ID");
     return;
   }
 
@@ -60,10 +58,12 @@ const updateProduct = async (ctx) => {
   );
 
   if (!updatedProduct) {
-    ctx.status = 404;
-    ctx.body = {
-      message: "Product not found or you do not have permission to modify it",
-    };
+    sendError(
+      ctx,
+      404,
+      "PRODUCT_NOT_FOUND_OR_UNAUTHORIZED",
+      "Product not found or you do not have permission to modify it",
+    );
     return;
   }
 
@@ -78,8 +78,7 @@ const deleteProduct = async (ctx) => {
   const productId = ctx.params.id;
 
   if (!mongoose.isValidObjectId(productId)) {
-    ctx.status = 400;
-    ctx.body = { message: "Invalid product ID" };
+    sendError(ctx, 400, "INVALID_PRODUCT_ID", "Invalid product ID");
     return;
   }
 
@@ -89,10 +88,12 @@ const deleteProduct = async (ctx) => {
   );
 
   if (!product) {
-    ctx.status = 404;
-    ctx.body = {
-      message: "Product not found or you do not have permission to modify it",
-    };
+    sendError(
+      ctx,
+      404,
+      "PRODUCT_NOT_FOUND_OR_UNAUTHORIZED",
+      "Product not found or you do not have permission to modify it",
+    );
     return;
   }
 
@@ -106,8 +107,7 @@ const patchProductPrice = async (ctx) => {
   const productId = ctx.params.id;
 
   if (!mongoose.isValidObjectId(productId)) {
-    ctx.status = 400;
-    ctx.body = { message: "Invalid product ID" };
+    sendError(ctx, 400, "INVALID_PRODUCT_ID", "Invalid product ID");
     return;
   }
 
@@ -118,10 +118,12 @@ const patchProductPrice = async (ctx) => {
   );
 
   if (!product) {
-    ctx.status = 404;
-    ctx.body = {
-      message: "Product not found or you do not have permission to modify it",
-    };
+    sendError(
+      ctx,
+      404,
+      "PRODUCT_NOT_FOUND_OR_UNAUTHORIZED",
+      "Product not found or you do not have permission to modify it",
+    );
     return;
   }
 
@@ -138,10 +140,7 @@ const cheapestProduct = async (ctx) => {
   );
 
   if (!products) {
-    ctx.status = 404;
-    ctx.body = {
-      message: "No products found",
-    };
+    sendError(ctx, 404, "PRODUCTS_NOT_FOUND", "No products found");
     return;
   }
 

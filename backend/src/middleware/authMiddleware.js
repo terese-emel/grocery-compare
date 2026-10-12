@@ -1,13 +1,11 @@
 const jwt = require("jsonwebtoken");
+const { sendError } = require("../utils/apiError");
 
 async function requireAuth(ctx, next) {
   const authorization = ctx.get("Authorization");
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    ctx.status = 401;
-    ctx.body = {
-      message: "Authentication required",
-    };
+    sendError(ctx, 401, "AUTHENTICATION_REQUIRED", "Authentication required");
     return;
   }
 
@@ -20,10 +18,7 @@ async function requireAuth(ctx, next) {
 
     await next();
   } catch {
-    ctx.status = 401;
-    ctx.body = {
-      message: "Invalid or expired token",
-    };
+    sendError(ctx, 401, "INVALID_TOKEN", "Invalid or expired token");
   }
 }
 

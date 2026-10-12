@@ -12,6 +12,11 @@ async function errorHandler(ctx, next) {
     ctx.set("X-Request-Id", ctx.state.requestId);
     ctx.body = {
       message: ctx.status === 500 ? "Internal server error" : error.message,
+      error: {
+        code: error.code || "INTERNAL_SERVER_ERROR",
+        message: ctx.status === 500 ? "Internal server error" : error.message,
+        requestId: ctx.state.requestId,
+      },
     };
   }
 }

@@ -97,9 +97,14 @@ describe("Authentication API", () => {
     const response = await request(app.callback()).get("/products");
 
     expect(response.status).toBe(401);
-    expect(response.body).toEqual({
+    expect(response.body).toMatchObject({
       message: "Authentication required",
+      error: {
+        code: "AUTHENTICATION_REQUIRED",
+        message: "Authentication required",
+      },
     });
+    expect(response.body.error.requestId).toBe(response.headers["x-request-id"]);
   });
 
   test("GET /auth/me returns the authenticated user", async () => {
@@ -125,9 +130,14 @@ describe("Authentication API", () => {
     const response = await request(app.callback()).get("/auth/me");
 
     expect(response.status).toBe(401);
-    expect(response.body).toEqual({
+    expect(response.body).toMatchObject({
       message: "Authentication required",
+      error: {
+        code: "AUTHENTICATION_REQUIRED",
+        message: "Authentication required",
+      },
     });
+    expect(response.body.error.requestId).toBe(response.headers["x-request-id"]);
   });
 
   test("returns a request ID header", async () => {
