@@ -30,4 +30,11 @@ const productSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+// Supports filtered product searches that are sorted by price.
+productSchema.index({ name: 1, shop: 1, price: 1 });
+productSchema.index({ shop: 1, price: 1 });
+
+// Supports ownership checks used by update, patch, and delete operations.
+productSchema.index({ owner: 1 });
+
 module.exports = mongoose.model("Product", productSchema);
