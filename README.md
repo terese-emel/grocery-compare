@@ -154,6 +154,14 @@ docker compose up --build
 
 Open the containerized frontend at `http://localhost:8080`. Docker runs MongoDB on an internal network, the backend on port `3000`, and the frontend through Nginx on port `8080`.
 
+Compose uses health checks to coordinate startup: MongoDB must respond to a ping before the backend starts, and the backend must report healthy before the frontend starts.
+
+Check the service health with:
+
+```bash
+docker compose ps
+```
+
 Stop the containers with:
 
 ```bash
