@@ -50,15 +50,39 @@ paths:
           schema:
             type: string
           example: milk
+        - name: shop
+          in: query
+          required: false
+          description: Filter products by shop; can be used without a product name
+          schema:
+            type: string
+          example: Coop
+        - name: page
+          in: query
+          required: false
+          description: Page number
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          description: Number of products per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
       responses:
         "200":
           description: Products returned successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Product"
+                $ref: "#/components/schemas/PaginatedProductsResponse"
+        "400":
+          $ref: "#/components/responses/InvalidQuery"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -290,6 +314,33 @@ components:
           type: string
           example: 1L
 
+    PaginatedProductsResponse:
+      type: object
+      required:
+        - items
+        - page
+        - limit
+        - total
+        - pages
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        total:
+          type: integer
+          minimum: 0
+        pages:
+          type: integer
+          minimum: 0
+
     PriceInput:
       type: object
       required:
@@ -365,6 +416,13 @@ components:
   responses:
     InvalidProductData:
       description: Invalid product data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InvalidQuery:
+      description: Invalid query parameters
       content:
         application/json:
           schema:
