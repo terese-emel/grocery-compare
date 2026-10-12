@@ -18,6 +18,13 @@ export class AuthPage {
     await expect(this.page.getByText(`Signed in as ${email}`)).toBeVisible();
   }
 
+  async loginExpectingError(email, password, message) {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.page.getByRole("button", { name: "Login" }).click();
+    await expect(this.page.getByRole("alert")).toHaveText(message);
+  }
+
   async openRegistration() {
     await this.page.getByRole("button", { name: "Create a new account" }).click();
   }
@@ -27,6 +34,13 @@ export class AuthPage {
     await this.passwordInput.fill(password);
     await this.page.getByRole("button", { name: "Register" }).click();
     await expect(this.page.getByText(`Signed in as ${email}`)).toBeVisible();
+  }
+
+  async registerExpectingError(email, password, message) {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.page.getByRole("button", { name: "Register" }).click();
+    await expect(this.page.getByRole("alert")).toHaveText(message);
   }
 
   async logout() {
