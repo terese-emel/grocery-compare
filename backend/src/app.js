@@ -8,6 +8,7 @@ const healthRoutes = require("./routes/healthRoutes");
 const authRoutes = require("./routes/authRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const requestId = require("./middleware/requestId");
+const csrfProtection = require("./middleware/csrf");
 
 const app = new Koa();
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
@@ -37,6 +38,7 @@ app.use(errorHandler);
 app.use(helmet());
 app.use(bodyParser({ jsonLimit: "100kb" }));
 app.use(cors({ origin: frontendUrl, credentials: true }));
+app.use(csrfProtection);
 app.use(apiLimiter);
 app.use(authRoutes.routes());
 app.use(authRoutes.allowedMethods());

@@ -46,7 +46,18 @@ export async function logout() {
   await fetch(`${API_URL}/auth/logout`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "X-CSRF-Token": getCsrfToken(),
+    },
   });
+}
+
+function getCsrfToken() {
+  const csrfCookie = document.cookie
+    .split("; ")
+    .find((cookie) => cookie.startsWith("csrf_token="));
+
+  return csrfCookie ? decodeURIComponent(csrfCookie.split("=")[1]) : "";
 }
 
 export async function getCurrentUser() {

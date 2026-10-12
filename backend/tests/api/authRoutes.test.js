@@ -35,7 +35,9 @@ describe("Authentication API", () => {
         email: "test@example.com",
       },
     });
-    expect(response.headers["set-cookie"][0]).toContain("auth_token=");
+    expect(response.headers["set-cookie"]).toEqual(
+      expect.arrayContaining([expect.stringContaining("auth_token=")]),
+    );
     expect(authService.registerUser).toHaveBeenCalledWith(
       "test@example.com",
       "password123",
@@ -78,7 +80,9 @@ describe("Authentication API", () => {
       id: "user-1",
       email: "test@example.com",
     });
-    expect(response.headers["set-cookie"][0]).toContain("auth_token=");
+    expect(response.headers["set-cookie"]).toEqual(
+      expect.arrayContaining([expect.stringContaining("auth_token=")]),
+    );
     expect(authService.loginUser).toHaveBeenCalledWith(
       "test@example.com",
       "password123",
