@@ -9,15 +9,21 @@ servers:
   - url: http://localhost:3000
     description: Local development server
 
+security:
+  - bearerAuth: []
+
 tags:
   - name: Health
     description: Service and database health information
+  - name: Authentication
+    description: User registration and JWT authentication
   - name: Products
     description: Grocery product operations
 
 paths:
   /health:
     get:
+      security: []
       operationId: getHealth
       tags:
         - Health
@@ -29,6 +35,80 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
+
+  /auth/register:
+    post:
+      security: []
+      operationId: registerUser
+      tags:
+        - Authentication
+      summary: Register a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthInput"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/InvalidAuthData"
+        "409":
+          description: Email is already registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/login:
+    post:
+      security: []
+      operationId: loginUser
+      tags:
+        - Authentication
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthInput"
+      responses:
+        "200":
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/InvalidAuthData"
+        "401":
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      tags:
+        - Authentication
+      summary: Get the authenticated user
+      responses:
+        "200":
+          description: Authenticated user returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUserResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "503":
           description: API is running but database is unavailable
           content:
@@ -263,7 +343,63 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
+    AuthInput:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: test@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: password123
+
+    AuthResponse:
+      type: object
+      required:
+        - user
+        - token
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    User:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: string
+          example: 64f1a2b3c4d5e6f789012345
+        email:
+          type: string
+          format: email
+          example: test@example.com
+
+    CurrentUserResponse:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+
     Product:
       type: object
       required:
@@ -414,6 +550,20 @@ components:
           $ref: "#/components/schemas/Product"
 
   responses:
+    InvalidAuthData:
+      description: Invalid email or password data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized:
+      description: Authentication is required or the token is invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
     InvalidProductData:
       description: Invalid product data
       content:
