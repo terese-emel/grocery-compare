@@ -38,10 +38,6 @@ export async function login(email, password) {
   return data;
 }
 
-export function getAuthToken() {
-  return null;
-}
-
 export async function logout() {
   await fetch(`${API_URL}/auth/logout`, {
     method: "POST",
@@ -65,9 +61,13 @@ export async function getCurrentUser() {
     credentials: "include",
   });
 
-  if (!response.ok) {
+  if (response.status === 401) {
     void logout().catch(() => {});
     return null;
+  }
+
+  if (!response.ok) {
+    throw new Error("Unable to restore session");
   }
 
   const data = await response.json();

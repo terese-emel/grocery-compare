@@ -5,6 +5,8 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
+    "test:real": "playwright test --config=playwright.real.config.js",
+    "test:real:headed": "playwright test --config=playwright.real.config.js --headed",
     "report": "playwright show-report"
   },
   "devDependencies": {

@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    logoutRequest();
+    void logoutRequest().catch(() => {});
     setUser(null);
   }
 

@@ -33,6 +33,30 @@ jobs:
       - name: Run Playwright tests
         working-directory: e2e
         run: npm test
+      - name: Start Docker stack
+        run: docker compose up --build --detach
+        env:
+          JWT_SECRET: ci-real-stack-secret
+      - name: Wait for Docker stack
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent http://localhost:3000/health && curl --fail --silent http://localhost:8080/ > /dev/null; then
+              echo
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          docker compose ps
+          docker compose logs
+          exit 1
+      - name: Run real-stack Playwright test
+        working-directory: e2e
+        run: npm run test:real
+      - name: Stop Docker stack
+        if: always()
+        run: docker compose down --volumes
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4

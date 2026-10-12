@@ -1,4 +1,4 @@
-import { getAuthToken, logout } from "./authApi";
+import { logout } from "./authApi";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,7 +21,6 @@ export class ApiError extends Error {
 }
 
 export async function apiRequest(path, options = {}) {
-  const token = getAuthToken();
   const csrfToken = getCsrfToken();
 
   const response = await fetch(`${API_URL}${path}`, {
@@ -30,7 +29,6 @@ export async function apiRequest(path, options = {}) {
     headers: {
       "Content-Type": "application/json",
       ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   });
@@ -38,7 +36,7 @@ export async function apiRequest(path, options = {}) {
   const data = await response.json();
 
   if (response.status === 401) {
-    logout();
+    void logout().catch(() => {});
   }
 
   if (!response.ok) {

@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { apiRequest, ApiError } from "./apiClient";
-import { getAuthToken, logout } from "./authApi";
+import { logout } from "./authApi";
 
 vi.mock("./authApi", () => ({
-  getAuthToken: vi.fn(),
   logout: vi.fn(),
 }));
 
@@ -11,10 +10,10 @@ describe("apiRequest", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     globalThis.fetch = vi.fn();
+    logout.mockResolvedValue(undefined);
   });
 
-  it("adds the token and returns successful JSON", async () => {
-    getAuthToken.mockReturnValue("jwt-token");
+  it("returns successful JSON with cookie credentials", async () => {
     fetch.mockResolvedValue({
       ok: true,
       status: 200,
@@ -29,14 +28,12 @@ describe("apiRequest", () => {
       expect.objectContaining({
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer jwt-token",
         },
       }),
     );
   });
 
   it("supports requests without a token", async () => {
-    getAuthToken.mockReturnValue(null);
     fetch.mockResolvedValue({
       ok: true,
       status: 200,
@@ -56,7 +53,6 @@ describe("apiRequest", () => {
   });
 
   it("adds the CSRF token from the cookie", async () => {
-    getAuthToken.mockReturnValue(null);
     document.cookie = "csrf_token=test-csrf-token";
     fetch.mockResolvedValue({
       ok: true,
@@ -78,7 +74,6 @@ describe("apiRequest", () => {
   });
 
   it("throws the API error message", async () => {
-    getAuthToken.mockReturnValue("jwt-token");
     fetch.mockResolvedValue({
       ok: false,
       status: 400,
@@ -103,7 +98,6 @@ describe("apiRequest", () => {
   });
 
   it("logs out when the token is rejected", async () => {
-    getAuthToken.mockReturnValue("expired-token");
     fetch.mockResolvedValue({
       ok: false,
       status: 401,

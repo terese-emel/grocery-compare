@@ -37,6 +37,58 @@ Mongoose
 MongoDB
 ```
 
+## Architecture decisions
+
+The project uses a layered full-stack architecture:
+
+```text
+React UI
+  ↓
+Frontend services and auth context
+  ↓ HTTP requests with credentials and CSRF headers
+Koa routes
+  ↓
+Middleware: request IDs, security headers, CORS, rate limiting, CSRF, auth
+  ↓
+Controllers: HTTP status codes and response shapes
+  ↓
+Services: business rules and database queries
+  ↓
+Mongoose models
+  ↓
+MongoDB
+```
+
+### Why this architecture?
+
+- **React and Vite** provide a fast component-based frontend with a simple development and production build workflow.
+- **Koa** keeps the backend middleware pipeline explicit and lightweight, which makes authentication, validation, errors, and request tracing easy to reason about.
+- **Controllers and services are separated** so HTTP concerns stay in controllers while business logic remains reusable and testable.
+- **Mongoose** provides schema definitions, validation, indexes, and MongoDB integration without hiding the data model.
+- **MongoDB** fits the product document shape and supports filtering, sorting, ownership, and pagination.
+- **Zod** validates request bodies and query parameters at the API boundary before data reaches controllers or services.
+- **HTTP-only cookies** protect authentication tokens from direct JavaScript access. CSRF tokens protect state-changing browser requests.
+- **OpenAPI and Swagger UI** make the API contract discoverable and validate documentation changes in CI.
+- **Docker Compose** provides a repeatable local environment with frontend, backend, and MongoDB services.
+- **Unit, API, integration, and E2E tests** provide coverage at different levels: isolated logic, HTTP behavior, database behavior, and real browser-to-container behavior.
+
+### Testing architecture
+
+```text
+Frontend component and service tests
+  ↓ Vitest + React Testing Library
+Backend unit and API tests
+  ↓ Jest + Supertest
+Backend integration tests
+  ↓ Jest + MongoDB Memory Server
+Mocked browser tests
+  ↓ Playwright
+Real-stack browser test
+  ↓ Playwright → Nginx → Koa → MongoDB containers
+```
+
+The mocked browser suite is fast and deterministic. The real-stack suite verifies that the deployed container boundaries, cookies, CORS configuration, API calls, and database persistence work together.
+
 Authentication flow:
 
 ```text
@@ -47,6 +99,7 @@ Browser automatically includes the cookie with API requests
 Authentication middleware identifies the user
   ↓
 Ownership checks protect product updates and deletions
+```
 
 Cookie authentication also uses CSRF protection:
 
@@ -62,7 +115,6 @@ Backend compares the cookie and header values
 
 The CSRF header is required for authenticated `POST`, `PUT`, `PATCH`, and
 `DELETE` requests. Safe `GET` requests do not require it.
-```
 
 Docker flow:
 
@@ -232,6 +284,25 @@ docker compose down
 ```
 
 To test the API in VS Code, open `backend/requests.http` with the REST Client extension.
+
+Run the mocked browser tests:
+
+```bash
+cd e2e
+npm test
+```
+
+Run the real Docker-stack browser test after the Compose services are running:
+
+```bash
+docker compose up --build --detach
+cd e2e
+npm run test:real
+docker compose down
+```
+
+The real-stack test registers a temporary user, creates a product in MongoDB,
+and searches for it through the containerized frontend and backend.
 
 Run unit tests:
 
