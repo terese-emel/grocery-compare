@@ -154,6 +154,7 @@ function App() {
         products={products}
         onDelete={handleDelete}
         onUpdate={handleUpdate}
+        loggedInUser={user}
       />
       <AddProductForm onCreated={handleCreated} />
     </main>

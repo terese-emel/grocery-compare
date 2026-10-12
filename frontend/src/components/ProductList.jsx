@@ -1,6 +1,14 @@
 import { useState } from "react";
 
-const ProductList = ({ products, onDelete, onUpdate }) => {
+function getId(value) {
+  if (!value) {
+    return null;
+  }
+
+  return typeof value === "object" ? value._id : value;
+}
+
+function ProductList({ products, onDelete, onUpdate, loggedInUser }) {
   const [editingProductId, setEditingProductId] = useState(null);
   const [editedProductPrice, setEditedProductPrice] = useState("");
   const [savingProductId, setSavingProductId] = useState(null);
@@ -9,27 +17,29 @@ const ProductList = ({ products, onDelete, onUpdate }) => {
     return null;
   }
 
+  const loggedInUserId = getId(loggedInUser?.id);
   const cheapestPrice = products[0].price;
 
-  const startEditing = (productId, currentPrice) => {
+  function startEditing(productId, currentPrice) {
     setEditingProductId(productId);
     setEditedProductPrice(currentPrice);
-  };
+  }
 
-  const cancelEditing = () => {
+  function cancelEditing() {
     setEditingProductId(null);
     setEditedProductPrice("");
-  };
+  }
 
-  const saveEditedPrice = async (productId) => {
+  async function saveEditedPrice(productId) {
     setSavingProductId(productId);
+
     try {
       await onUpdate(productId, parseFloat(editedProductPrice));
       cancelEditing();
     } finally {
       setSavingProductId(null);
     }
-  };
+  }
 
   return (
     <section>
@@ -38,6 +48,8 @@ const ProductList = ({ products, onDelete, onUpdate }) => {
       {products.map((product) => {
         const isCheapest = product.price === cheapestPrice;
         const isEditing = product._id === editingProductId;
+        const productOwnerId = getId(product.owner);
+        const canManage = loggedInUserId === productOwnerId;
 
         return (
           <div
@@ -45,7 +57,8 @@ const ProductList = ({ products, onDelete, onUpdate }) => {
             key={product._id}
           >
             <span>{product.shop}</span>
-            {isEditing ? (
+
+            {isEditing && canManage ? (
               <>
                 <input
                   type="number"
@@ -78,16 +91,20 @@ const ProductList = ({ products, onDelete, onUpdate }) => {
 
                 {isCheapest && <em>Cheapest</em>}
 
-                <button
-                  type="button"
-                  onClick={() => startEditing(product._id, product.price)}
-                >
-                  Edit
-                </button>
+                {canManage && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => startEditing(product._id, product.price)}
+                    >
+                      Edit
+                    </button>
 
-                <button type="button" onClick={() => onDelete(product._id)}>
-                  Delete
-                </button>
+                    <button type="button" onClick={() => onDelete(product._id)}>
+                      Delete
+                    </button>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -95,5 +112,6 @@ const ProductList = ({ products, onDelete, onUpdate }) => {
       })}
     </section>
   );
-};
+}
+
 export default ProductList;
