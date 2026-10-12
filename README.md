@@ -12,6 +12,8 @@ Grocery Compare is a full-stack learning project for comparing grocery prices ac
 - React frontend with loading and error states
 - React controls for adding, editing, and deleting products
 - MongoDB persistence through Mongoose
+- JWT authentication and product ownership authorization
+- OpenAPI documentation and Swagger UI
 
 ## Architecture
 
@@ -80,6 +82,10 @@ grocery-compare/
 │   │   ├── main.jsx
 │   │   └── styles.css
 │   ├── .env.local
+│   └── package.json
+├── e2e/
+│   ├── tests/
+│   ├── playwright.config.js
 │   └── package.json
 ├── .gitignore
 └── README.md
@@ -156,6 +162,17 @@ npm run test:integration
 ```
 
 Integration tests use a temporary in-memory MongoDB instance and do not modify your real database.
+
+Run end-to-end browser tests:
+
+```bash
+cd e2e
+npm install
+npx playwright install chromium
+npm test
+```
+
+Playwright starts the frontend on port `4173` and tests the login flow with mocked authentication responses.
 
 ## Learning path
 
