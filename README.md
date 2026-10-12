@@ -13,7 +13,9 @@ Grocery Compare is a full-stack learning project for comparing grocery prices ac
 - React controls for adding, editing, and deleting products
 - MongoDB persistence through Mongoose
 - JWT authentication and product ownership authorization
+- User registration, login, session restoration, and logout
 - OpenAPI documentation and Swagger UI
+- Automated backend, frontend, and browser tests
 
 ## Architecture
 
@@ -43,6 +45,10 @@ route → controller → service → Product model → MongoDB
 | PUT | `/products/:id` | Replace a product's price |
 | PATCH | `/products/:id` | Update a product's price |
 | DELETE | `/products/:id` | Delete a product |
+| GET | `/health` | Check API and database health |
+| POST | `/auth/register` | Register a user and return a JWT |
+| POST | `/auth/login` | Log in and return a JWT |
+| GET | `/auth/me` | Return the authenticated user |
 
 Example product:
 
@@ -84,7 +90,11 @@ grocery-compare/
 │   ├── .env.local
 │   └── package.json
 ├── e2e/
+│   ├── fixtures/            # Shared authentication test setup
+│   ├── pages/               # Playwright Page Object Model classes
 │   ├── tests/
+│   │   ├── auth/            # Login, registration, and logout scenarios
+│   │   └── products/         # Search and create-product scenarios
 │   ├── playwright.config.js
 │   └── package.json
 ├── .gitignore
@@ -163,6 +173,22 @@ npm run test:integration
 
 Integration tests use a temporary in-memory MongoDB instance and do not modify your real database.
 
+Run all backend tests:
+
+```bash
+cd backend
+npm test
+```
+
+Run frontend tests:
+
+```bash
+cd frontend
+npm run test:run
+```
+
+Frontend tests use Vitest and React Testing Library.
+
 Run end-to-end browser tests:
 
 ```bash
@@ -173,6 +199,21 @@ npm test
 ```
 
 Playwright starts the frontend on port `4173` and tests the login flow with mocked authentication responses.
+The E2E suite uses Page Object Model classes and currently covers registration, login, logout, product search, and adding a product. API responses are mocked so the browser tests remain deterministic.
+
+Run the browser tests with the visible browser:
+
+```bash
+npm run test:headed
+```
+
+View the latest Playwright report:
+
+```bash
+npm run report
+```
+
+GitHub Actions runs the Playwright suite automatically through `.github/workflows/e2e-tests.yml`.
 
 ## Learning path
 
@@ -182,4 +223,5 @@ The project is being developed step by step:
 2. MongoDB and Mongoose
 3. React components, state, props, and effects
 4. Frontend API integration
-5. Testing, Docker, and deployment
+5. Test automation with Jest, Vitest, React Testing Library, and Playwright
+6. Docker and deployment
