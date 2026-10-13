@@ -1,8 +1,16 @@
 const mongoose = require("mongoose");
 const productService = require("../services/productService");
+const analyticsService = require("../services/analyticsService");
 const { sendError } = require("../utils/apiError");
 const getProducts = async (ctx) => {
-  const products = await productService.getProducts(ctx.state.validated.query);
+  const query = ctx.state.validated.query;
+  const products = await productService.getProducts(query);
+
+  void analyticsService.recordProductSearch({
+    userId: ctx.state.user.userId,
+    name: query.name,
+    shop: query.shop,
+  });
 
   ctx.status = 200;
   ctx.body = products;

@@ -15,6 +15,7 @@ Grocery Compare is a full-stack learning project for comparing grocery prices ac
 - React frontend with loading and error states
 - React controls for adding, editing, and deleting products
 - MongoDB persistence through Mongoose
+- PostgreSQL analytics for product search events
 - JWT authentication and product ownership authorization
 - HTTP-only cookie authentication with session restoration and logout
 - Structured API errors with stable error codes and request IDs
@@ -35,6 +36,14 @@ Koa API
 Mongoose
   ↓
 MongoDB
+
+Product search events are recorded separately:
+
+```text
+Product search request
+  ├── MongoDB returns product results
+  └── PostgreSQL stores an analytics event asynchronously
+```
 ```
 
 ## Architecture decisions
@@ -121,6 +130,7 @@ Docker flow:
 ```text
 docker compose
   ├── MongoDB
+  ├── PostgreSQL analytics database
   ├── Koa backend
   └── Nginx frontend
 ```
