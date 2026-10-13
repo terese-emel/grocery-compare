@@ -36,7 +36,8 @@ function tokensMatch(expected, received) {
 }
 
 async function csrfProtection(ctx, next) {
-  ensureCsrfToken(ctx);
+  const csrfToken = ensureCsrfToken(ctx);
+  ctx.set("X-CSRF-Token", csrfToken);
 
   if (
     safeMethods.has(ctx.method) ||

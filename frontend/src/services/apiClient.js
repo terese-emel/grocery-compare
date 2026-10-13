@@ -1,14 +1,7 @@
 import { logout } from "./authApi";
+import { captureCsrfToken, getCsrfToken } from "./csrf";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-function getCsrfToken() {
-  const csrfCookie = document.cookie
-    .split("; ")
-    .find((cookie) => cookie.startsWith("csrf_token="));
-
-  return csrfCookie ? decodeURIComponent(csrfCookie.split("=")[1]) : null;
-}
 
 export class ApiError extends Error {
   constructor(message, { code, requestId, status } = {}) {
@@ -21,17 +14,16 @@ export class ApiError extends Error {
 }
 
 export async function apiRequest(path, options = {}) {
-  const csrfToken = getCsrfToken();
-
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+      ...(getCsrfToken() ? { "X-CSRF-Token": getCsrfToken() } : {}),
       ...options.headers,
     },
   });
+  captureCsrfToken(response);
 
   const data = await response.json();
 

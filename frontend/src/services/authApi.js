@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL;
+import { captureCsrfToken, getCsrfToken } from "./csrf";
 
 export async function register(email, password) {
   const response = await fetch(`${API_URL}/auth/register`, {
@@ -9,6 +10,7 @@ export async function register(email, password) {
     },
     body: JSON.stringify({ email, password }),
   });
+  captureCsrfToken(response);
 
   const data = await response.json();
 
@@ -28,6 +30,7 @@ export async function login(email, password) {
     },
     body: JSON.stringify({ email, password }),
   });
+  captureCsrfToken(response);
 
   const data = await response.json();
 
@@ -48,18 +51,11 @@ export async function logout() {
   });
 }
 
-function getCsrfToken() {
-  const csrfCookie = document.cookie
-    .split("; ")
-    .find((cookie) => cookie.startsWith("csrf_token="));
-
-  return csrfCookie ? decodeURIComponent(csrfCookie.split("=")[1]) : "";
-}
-
 export async function getCurrentUser() {
   const response = await fetch(`${API_URL}/auth/me`, {
     credentials: "include",
   });
+  captureCsrfToken(response);
 
   if (response.status === 401) {
     void logout().catch(() => {});

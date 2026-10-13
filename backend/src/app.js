@@ -40,7 +40,13 @@ app.use(requestId);
 app.use(errorHandler);
 app.use(helmet());
 app.use(bodyParser({ jsonLimit: "100kb" }));
-app.use(cors({ origin: frontendUrl, credentials: true }));
+app.use(
+  cors({
+    origin: frontendUrl,
+    credentials: true,
+    exposeHeaders: ["X-CSRF-Token", "X-Request-Id"],
+  }),
+);
 app.use(csrfProtection);
 app.use(apiLimiter);
 app.use(authRoutes.routes());
