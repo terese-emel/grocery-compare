@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint .",
     "dev": "node --env-file=.env --watch src/index.js",
-    "start": "node --env-file=.env src/index.js",
+    "start": "node src/index.js",
     "seed:pagination": "node --env-file=.env scripts/seedPagination.js",
     "test": "jest --runInBand",
     "test:coverage": "jest --runInBand --coverage",
