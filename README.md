@@ -9,6 +9,8 @@ Grocery Compare is a full-stack application for searching grocery products, comp
 
 The demo uses React and Vite for the frontend, a Node.js/Koa API, MongoDB Atlas for product and user data, and Render for hosting.
 
+The API also exposes `/live` for process liveness and `/ready` for database readiness.
+
 ## Features
 
 - User registration and login with HTTP-only cookie authentication

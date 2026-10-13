@@ -28,7 +28,7 @@ describe("productService", () => {
     expect(Product.find).toHaveBeenCalledWith({
       name: { $regex: "milk", $options: "i" },
     });
-    expect(sort).toHaveBeenCalledWith({ price: 1 });
+    expect(sort).toHaveBeenCalledWith({ price: 1, _id: 1 });
     expect(result).toEqual({
       items: products,
       page: 1,
@@ -84,7 +84,7 @@ describe("productService", () => {
       name: { $regex: "milk", $options: "i" },
       shop: { $regex: "ICA", $options: "i" },
     });
-    expect(sort).toHaveBeenCalledWith({ price: 1 });
+    expect(sort).toHaveBeenCalledWith({ price: 1, _id: 1 });
   });
 
   test("paginates products when page and limit are provided", async () => {

@@ -30,7 +30,7 @@ const getProducts = async ({ name, shop, page, limit }) => {
   const total = await Product.countDocuments(filter);
 
   const products = await Product.find(filter)
-    .sort({ price: 1 })
+    .sort({ price: 1, _id: 1 })
     .skip(skip)
     .limit(pageSize);
 

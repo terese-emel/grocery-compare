@@ -16,6 +16,16 @@ function getConfig() {
     );
   }
 
+  if (process.env.NODE_ENV === "production") {
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+      throw new Error("JWT_SECRET must contain at least 32 characters in production");
+    }
+
+    if (!process.env.FRONTEND_URL?.startsWith("https://")) {
+      throw new Error("FRONTEND_URL must use HTTPS in production");
+    }
+  }
+
   const username = encodeURIComponent(process.env.MONGODB_USER || "");
   const password = encodeURIComponent(process.env.MONGODB_PASSWORD || "");
 

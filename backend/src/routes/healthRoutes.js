@@ -13,4 +13,19 @@ router.get("/health", (ctx) => {
   };
 });
 
+router.get("/live", (ctx) => {
+  ctx.status = 200;
+  ctx.body = { status: "ok" };
+});
+
+router.get("/ready", (ctx) => {
+  const databaseConnected = mongoose.connection.readyState === 1;
+
+  ctx.status = databaseConnected ? 200 : 503;
+  ctx.body = {
+    status: databaseConnected ? "ready" : "not ready",
+    database: databaseConnected ? "connected" : "disconnected",
+  };
+});
+
 module.exports = router;

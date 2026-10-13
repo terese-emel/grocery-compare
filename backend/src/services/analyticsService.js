@@ -33,7 +33,14 @@ async function recordProductSearch({ userId, name, shop }) {
   }
 }
 
+async function closeAnalytics() {
+  if (pool) {
+    await pool.end();
+  }
+}
+
 module.exports = {
   initializeAnalytics,
   recordProductSearch,
+  closeAnalytics,
 };

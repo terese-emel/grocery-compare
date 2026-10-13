@@ -3,7 +3,8 @@ const ErrorMessage = ({ message }) => {
     return null;
   }
 
-  const errorMessage = typeof message === "string" ? message : message.message;
+  const errorMessage =
+    typeof message === "string" ? message : message.message || "Something went wrong";
 
   return (
     <p className="error-message" role="alert">

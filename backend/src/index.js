@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const app = require("./app");
 const { getConfig } = require("./config");
-const { initializeAnalytics } = require("./services/analyticsService");
+const { closeAnalytics, initializeAnalytics } = require("./services/analyticsService");
 
 let server;
 
@@ -31,11 +31,13 @@ async function shutdown(signal) {
   if (server) {
     server.close(async () => {
       await mongoose.disconnect();
+      await closeAnalytics();
       console.log("MongoDB disconnected.");
       process.exit(0);
     });
   } else {
     await mongoose.disconnect();
+    await closeAnalytics();
     process.exit(0);
   }
 }
