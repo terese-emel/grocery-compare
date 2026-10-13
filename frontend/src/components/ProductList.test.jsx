@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import ProductList from "./ProductList";
 
@@ -65,5 +66,66 @@ describe("ProductList ownership controls", () => {
 
     expect(container.querySelectorAll(".product-name")).toHaveLength(2);
     expect(screen.getByText("Oat Milk")).toBeInTheDocument();
+  });
+
+  it("saves an edited price and exits edit mode", async () => {
+    const user = userEvent.setup();
+    const onUpdate = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <ProductList
+        products={products}
+        loggedInUser={{ id: "user-1" }}
+        onDelete={vi.fn()}
+        onUpdate={onUpdate}
+      />,
+    );
+
+    await user.click(screen.getAllByRole("button", { name: "Edit" })[0]);
+    const priceInput = screen.getByRole("spinbutton");
+    await user.clear(priceInput);
+    await user.type(priceInput, "11.5");
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(onUpdate).toHaveBeenCalledWith("product-1", 11.5);
+    expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
+  });
+
+  it("cancels editing without updating", async () => {
+    const user = userEvent.setup();
+    const onUpdate = vi.fn();
+
+    render(
+      <ProductList
+        products={products}
+        loggedInUser={{ id: "user-1" }}
+        onDelete={vi.fn()}
+        onUpdate={onUpdate}
+      />,
+    );
+
+    await user.click(screen.getAllByRole("button", { name: "Edit" })[0]);
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(onUpdate).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
+  });
+
+  it("deletes an owned product", async () => {
+    const user = userEvent.setup();
+    const onDelete = vi.fn();
+
+    render(
+      <ProductList
+        products={products}
+        loggedInUser={{ id: "user-1" }}
+        onDelete={onDelete}
+        onUpdate={vi.fn()}
+      />,
+    );
+
+    await user.click(screen.getAllByRole("button", { name: "Delete" })[0]);
+
+    expect(onDelete).toHaveBeenCalledWith("product-1");
   });
 });
