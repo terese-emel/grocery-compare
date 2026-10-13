@@ -11,6 +11,9 @@ const requestId = require("./middleware/requestId");
 const csrfProtection = require("./middleware/csrf");
 
 const app = new Koa();
+// Render terminates HTTPS at its proxy and forwards the original protocol.
+// Trusting the proxy lets Koa safely set secure cookies in production.
+app.proxy = process.env.NODE_ENV === "production";
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 const apiLimiter = RateLimit.middleware({
   interval: { min: 15 },
