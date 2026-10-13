@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SearchForm from "./SearchForm";
 import ProductList from "./ProductList";
 import ErrorMessage from "./ErrorMessage";
@@ -17,12 +17,21 @@ function AuthenticatedApp({ user, logout }) {
   const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const searchController = useRef(null);
 
   useEffect(() => {
     document.title = productName || "Grocery Compare";
   }, [productName]);
 
+  useEffect(() => {
+    return () => searchController.current?.abort();
+  }, []);
+
   async function loadProducts(page) {
+    searchController.current?.abort();
+    const controller = new AbortController();
+    searchController.current = controller;
+
     setError("");
     setLoading(true);
 
@@ -46,6 +55,7 @@ function AuthenticatedApp({ user, logout }) {
         name: productName,
         shop: shopName,
         page,
+        signal: controller.signal,
       });
 
       if (data.items.length === 0) {
@@ -59,7 +69,9 @@ function AuthenticatedApp({ user, logout }) {
       setPagination({ page: data.page, pages: data.pages });
       setCurrentPage(data.page);
     } catch (requestError) {
-      setError(requestError.message);
+      if (requestError.name !== "AbortError") {
+        setError(requestError.message);
+      }
     } finally {
       setLoading(false);
     }

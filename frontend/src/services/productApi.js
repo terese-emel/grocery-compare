@@ -1,8 +1,15 @@
 import { apiRequest } from "./apiClient";
 
-export function searchProducts({ name, shop = "", page = 1, limit = 10 }) {
+export function searchProducts({
+  name,
+  shop = "",
+  page = 1,
+  limit = 10,
+  signal,
+}) {
   return apiRequest(
     `/products?name=${encodeURIComponent(name)}&shop=${encodeURIComponent(shop)}&page=${page}&limit=${limit}`,
+    { signal },
   );
 }
 

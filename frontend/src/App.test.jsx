@@ -80,6 +80,9 @@ describe("product search validation", () => {
       await user.click(screen.getByRole("button", { name: "Search" }));
     });
 
-    expect(searchProducts).toHaveBeenCalledWith({ name: "", shop: "Coop", page: 1 });
+    expect(searchProducts).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "", shop: "Coop", page: 1 }),
+    );
+    expect(searchProducts.mock.calls[0][0].signal).toBeInstanceOf(AbortSignal);
   });
 });
