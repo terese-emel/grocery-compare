@@ -3,12 +3,14 @@ const helmet = require("koa-helmet");
 const { RateLimit } = require("koa2-ratelimit");
 const bodyParser = require("koa-bodyparser");
 const cors = require("@koa/cors");
+const metricsRoutes = require("./routes/metricsRoutes");
 const productRoutes = require("./routes/productRoutes");
 const healthRoutes = require("./routes/healthRoutes");
 const authRoutes = require("./routes/authRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const requestId = require("./middleware/requestId");
 const csrfProtection = require("./middleware/csrf");
+const metricsMiddleware = require("./middleware/metrics");
 
 const app = new Koa();
 // Render terminates HTTPS at its proxy and forwards the original protocol.
@@ -49,6 +51,9 @@ app.use(
 );
 app.use(csrfProtection);
 app.use(apiLimiter);
+app.use(metricsMiddleware);
+app.use(metricsRoutes.routes());
+app.use(metricsRoutes.allowedMethods());
 app.use(authRoutes.routes());
 app.use(authRoutes.allowedMethods());
 app.use(productRoutes.routes());

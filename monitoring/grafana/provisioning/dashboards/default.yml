@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: Grocery Compare
+    orgId: 1
+    folder: Grocery Compare
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
