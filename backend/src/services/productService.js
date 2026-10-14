@@ -89,20 +89,22 @@ const patchProductPrice = async (productId, price, ownerId) => {
 };
 
 const getCheapestProduct = async (name) => {
-  const products = await Product.find({
-    name: {
-      $regex: escapeRegex(name.trim()),
-      $options: "i",
-    },
-  }).sort({ price: 1 });
+  const nameFilter = {
+    $regex: escapeRegex(name.trim()),
+    $options: "i",
+  };
 
-  if (products.length === 0) {
+  // Find the lowest price in one pass, then fetch only products at that price.
+  const [cheapest] = await Product.find({ name: nameFilter })
+    .sort({ price: 1 })
+    .limit(1)
+    .lean();
+
+  if (!cheapest) {
     return null;
   }
 
-  const cheapestPrice = products[0].price;
-
-  return products.filter((product) => product.price === cheapestPrice);
+  return Product.find({ name: nameFilter, price: cheapest.price }).lean();
 };
 
 module.exports = {

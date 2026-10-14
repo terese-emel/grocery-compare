@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { createProduct } from "../services/productApi";
-import ErrorMessage from "./ErrorMessage";
 
 const AddProductForm = ({ onCreated }) => {
   const [productName, setProductName] = useState("");
@@ -52,7 +51,7 @@ const AddProductForm = ({ onCreated }) => {
       setPrice("");
       setUnit("");
     } catch (error) {
-      setMessage(error);
+      setMessage(error.message || "Failed to add product.");
     } finally {
       setSaving(false);
     }
@@ -112,11 +111,7 @@ const AddProductForm = ({ onCreated }) => {
           Reset
         </button>
       </form>
-      {typeof message === "object" ? (
-        <ErrorMessage message={message} />
-      ) : (
-        message && <p>{message}</p>
-      )}
+      {message && <p>{message}</p>}
     </section>
   );
 };

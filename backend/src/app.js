@@ -19,7 +19,7 @@ app.proxy = process.env.NODE_ENV === "production";
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 const apiLimiter = RateLimit.middleware({
   interval: { min: 15 },
-  max: 100,
+  max: 300,
   message: "Too many requests. Please try again later.",
 });
 

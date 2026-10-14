@@ -13,6 +13,8 @@ jobs:
   compose:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      JWT_SECRET: ci-only-test-secret
 
     steps:
       - name: Checkout repository
@@ -20,8 +22,6 @@ jobs:
 
       - name: Build and start services
         run: docker compose up --build --detach
-        env:
-          JWT_SECRET: ci-only-test-secret
 
       - name: Wait for backend health endpoint
         run: |

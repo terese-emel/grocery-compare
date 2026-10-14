@@ -65,9 +65,7 @@ describe("AddProductForm", () => {
     const user = await fillForm();
     await user.click(screen.getByRole("button", { name: "Add Product" }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Product creation failed",
-    );
+    expect(await screen.findByText("Product creation failed")).toBeInTheDocument();
   });
 
   it("resets entered values", async () => {

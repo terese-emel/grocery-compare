@@ -1,11 +1,11 @@
+const { sendError } = require("../utils/apiError");
+
 const validate = (schema, source, message) => async (ctx, next) => {
   const result = schema.safeParse(ctx.request[source] || ctx[source]);
 
   if (!result.success) {
-    ctx.status = 400;
-    ctx.body = {
-      message: message || result.error.issues[0]?.message || "Invalid request data",
-    };
+    const detail = message || result.error.issues[0]?.message || "Invalid request data";
+    sendError(ctx, 400, "VALIDATION_ERROR", detail);
     return;
   }
 

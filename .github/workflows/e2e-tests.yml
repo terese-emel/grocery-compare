@@ -12,6 +12,8 @@ jobs:
   playwright:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      JWT_SECRET: ci-real-stack-secret
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -35,8 +37,6 @@ jobs:
         run: npm test
       - name: Start Docker stack
         run: docker compose up --build --detach
-        env:
-          JWT_SECRET: ci-real-stack-secret
       - name: Wait for Docker stack
         run: |
           for attempt in {1..30}; do
