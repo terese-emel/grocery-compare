@@ -53,8 +53,9 @@ describe("Authentication API", () => {
       });
 
     expect(response.status).toBe(400);
-    expect(response.body).toEqual({
+    expect(response.body).toMatchObject({
       message: "Password must contain at least 8 characters",
+      error: { code: "VALIDATION_ERROR" },
     });
     expect(authService.registerUser).not.toHaveBeenCalled();
   });
@@ -95,8 +96,9 @@ describe("Authentication API", () => {
       .send({ email: "test@example.com" });
 
     expect(response.status).toBe(400);
-    expect(response.body).toEqual({
+    expect(response.body).toMatchObject({
       message: "Email and password are required",
+      error: { code: "VALIDATION_ERROR" },
     });
     expect(authService.loginUser).not.toHaveBeenCalled();
   });

@@ -98,7 +98,7 @@ describe("Product API", () => {
       .send({ name: "Milk", shop: "ICA", price: 10.9 });
 
     expect(response.status).toBe(400);
-    expect(response.body).toEqual({ message: "Invalid product data" });
+    expect(response.body).toMatchObject({ message: "Invalid product data", error: { code: "VALIDATION_ERROR" } });
     expect(productService.createProduct).not.toHaveBeenCalled();
   });
 

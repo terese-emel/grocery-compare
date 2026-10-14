@@ -117,28 +117,33 @@ describe("productService", () => {
   });
 
   test("returns all products tied for cheapest price", async () => {
-    const products = [
+    const cheapestProducts = [
       { name: "Milk", shop: "ICA", price: 10 },
       { name: "Milk", shop: "Coop", price: 10 },
-      { name: "Milk", shop: "Willys", price: 12 },
     ];
 
-    Product.find.mockReturnValue({
-      sort: jest.fn().mockResolvedValue(products),
-    });
+    // First call: find cheapest single product
+    const leanFirst = jest.fn().mockResolvedValue([{ name: "Milk", shop: "ICA", price: 10 }]);
+    const limitFirst = jest.fn().mockReturnValue({ lean: leanFirst });
+    const sortFirst = jest.fn().mockReturnValue({ limit: limitFirst });
+    // Second call: find all at cheapest price
+    const leanSecond = jest.fn().mockResolvedValue(cheapestProducts);
+
+    Product.find
+      .mockReturnValueOnce({ sort: sortFirst })
+      .mockReturnValueOnce({ lean: leanSecond });
 
     const result = await productService.getCheapestProduct("milk");
 
-    expect(result).toEqual([
-      { name: "Milk", shop: "ICA", price: 10 },
-      { name: "Milk", shop: "Coop", price: 10 },
-    ]);
+    expect(result).toEqual(cheapestProducts);
   });
 
   test("returns null when no matching products exist", async () => {
-    Product.find.mockReturnValue({
-      sort: jest.fn().mockResolvedValue([]),
-    });
+    const lean = jest.fn().mockResolvedValue([]);
+    const limit = jest.fn().mockReturnValue({ lean });
+    const sort = jest.fn().mockReturnValue({ limit });
+
+    Product.find.mockReturnValue({ sort });
 
     const result = await productService.getCheapestProduct("coffee");
 

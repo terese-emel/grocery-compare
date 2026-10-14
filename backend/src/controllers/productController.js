@@ -52,9 +52,10 @@ const updateProduct = async (ctx) => {
   }
 
 
+  const { name, shop, price, unit } = ctx.state.validated.body;
   const updatedProduct = await productService.updateProduct(
     productId,
-    { price: ctx.state.validated.body.price },
+    { name, shop, price, unit },
     ctx.state.user.userId,
   );
 

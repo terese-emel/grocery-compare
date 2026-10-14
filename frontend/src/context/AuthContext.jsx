@@ -38,8 +38,12 @@ export function AuthProvider({ children }) {
     return data.user;
   }
 
-  function logout() {
-    void logoutRequest().catch(() => {});
+  async function logout() {
+    try {
+      await logoutRequest();
+    } catch {
+      // Server error: proceed with local sign-out; the cookie will expire on its own.
+    }
     setUser(null);
   }
 

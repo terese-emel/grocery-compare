@@ -37,7 +37,7 @@ router.post(
 );
 router.put(
   "/products/:id",
-  validate(priceSchema, "body", "Valid price is required"),
+  validate(productSchema, "body", "Invalid product data"),
   updateProduct,
 );
 router.delete("/products/:id", deleteProduct);

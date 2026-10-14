@@ -12,10 +12,10 @@ const loginSchema = z.object({
 });
 
 const productSchema = z.object({
-  name: z.string().trim().min(1),
-  shop: z.string().trim().min(1),
+  name: z.string().trim().min(1).max(200),
+  shop: z.string().trim().min(1).max(200),
   price: z.coerce.number().finite().nonnegative(),
-  unit: z.string().trim().min(1),
+  unit: z.string().trim().min(1).max(50),
 });
 
 const priceSchema = z.object({
