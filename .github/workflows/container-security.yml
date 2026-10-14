@@ -29,12 +29,19 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Scan backend image
-        run: |
-          trivy image --format table --severity HIGH,CRITICAL --ignore-unfixed \
-            --skip-dirs /usr/local/lib/node_modules/npm \
-            --exit-code 1 grocery-compare-backend:ci
+        uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
+        with:
+          image-ref: grocery-compare-backend:ci
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
 
       - name: Scan frontend image
-        run: |
-          trivy image --format table --severity HIGH,CRITICAL --ignore-unfixed \
-            --exit-code 1 grocery-compare-frontend:ci
+        uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
+        with:
+          image-ref: grocery-compare-frontend:ci
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
