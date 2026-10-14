@@ -24,20 +24,14 @@ jobs:
       - name: Build frontend image
         run: docker build --tag grocery-compare-frontend:ci --build-arg VITE_API_URL=http://localhost:3000 frontend
 
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
       - name: Scan backend image
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          image-ref: grocery-compare-backend:ci
-          format: table
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: 1
+        run: |
+          trivy image --format table --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 grocery-compare-backend:ci
 
       - name: Scan frontend image
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          image-ref: grocery-compare-frontend:ci
-          format: table
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: 1
+        run: |
+          trivy image --format table --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 grocery-compare-frontend:ci
