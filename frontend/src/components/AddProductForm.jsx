@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { createProduct } from "../services/productApi";
-import ErrorMessage from "./ErrorMessage";
 
 const AddProductForm = ({ onCreated }) => {
   const [productName, setProductName] = useState("");
