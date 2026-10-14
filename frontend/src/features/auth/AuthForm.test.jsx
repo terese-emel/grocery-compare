@@ -1,10 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import AuthForm from "./AuthForm";
-import { AuthProvider } from "../context/AuthContext";
-import { getCurrentUser, login, register } from "../services/authApi";
+import { AuthProvider } from "./AuthProvider";
+import { getCurrentUser, login, register } from "./authApi";
 
-vi.mock("../services/authApi", () => ({
+vi.mock("./authApi", () => ({
   login: vi.fn(),
   register: vi.fn(),
   getCurrentUser: vi.fn(),

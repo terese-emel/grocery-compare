@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import SearchForm from "./SearchForm";
 import ProductList from "./ProductList";
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "../../components/ErrorMessage";
 import AddProductForm from "./AddProductForm";
 import {
   searchProducts,
   deleteProduct,
   updateProduct,
-} from "../services/productApi";
+} from "./productApi";
 
 function AuthenticatedApp({ user, logout }) {
   const [productName, setProductName] = useState("");

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import AuthForm from "./components/AuthForm";
-import AuthenticatedApp from "./components/AuthenticatedApp";
-import { useAuth } from "./context/authContextValue";
+import AuthForm from "./features/auth/AuthForm";
+import AuthenticatedApp from "./features/products/AuthenticatedApp";
+import { useAuth } from "./features/auth/authContext";
 
 function App() {
   const [authMode, setAuthMode] = useState("login");

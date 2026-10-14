@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { apiRequest } from "./apiClient";
+import { apiRequest } from "../../services/apiClient";
 import { searchProducts } from "./productApi";
 
-vi.mock("./apiClient", () => ({
+vi.mock("../../services/apiClient", () => ({
   apiRequest: vi.fn(),
 }));
 

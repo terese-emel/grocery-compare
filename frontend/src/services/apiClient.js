@@ -1,4 +1,4 @@
-import { logout } from "./authApi";
+import { logout } from "../features/auth/authApi";
 import { captureCsrfToken, getCsrfToken } from "./csrf";
 
 const API_URL = import.meta.env.VITE_API_URL;

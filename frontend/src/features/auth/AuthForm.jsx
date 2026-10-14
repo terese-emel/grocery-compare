@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../context/authContextValue";
+import { useAuth } from "./authContext";
 
 const AuthForm = ({ mode, onSuccess }) => {
   const { login, register } = useAuth();

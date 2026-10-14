@@ -70,7 +70,11 @@ grocery-compare/
 │   │   └── index.js
 │   └── tests/              # unit, API, and integration tests
 ├── frontend/
-│   └── src/                # React components, pages, services, and styles
+│   └── src/                # React app, feature modules, shared services, and styles
+│       ├── features/auth/  # Authentication UI, context, API, and tests
+│       ├── features/products/ # Product UI, API, and tests
+│       ├── components/     # Shared UI components
+│       └── services/       # Shared API client and CSRF handling
 ├── e2e/                    # Playwright tests and Page Objects
 ├── monitoring/            # Prometheus and Grafana configuration
 ├── docs/screenshots/      # Portfolio screenshots

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { apiRequest, ApiError } from "./apiClient";
-import { logout } from "./authApi";
+import { logout } from "../features/auth/authApi";
 
-vi.mock("./authApi", () => ({
+vi.mock("../features/auth/authApi", () => ({
   logout: vi.fn(),
 }));
 

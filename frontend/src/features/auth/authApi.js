@@ -1,5 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL;
-import { captureCsrfToken, getCsrfToken } from "./csrf";
+import { captureCsrfToken, getCsrfToken } from "../../services/csrf";
 
 export async function register(email, password) {
   const response = await fetch(`${API_URL}/auth/register`, {

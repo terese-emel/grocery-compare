@@ -1,4 +1,4 @@
-import { apiRequest } from "./apiClient";
+import { apiRequest } from "../../services/apiClient";
 
 export function searchProducts({
   name,

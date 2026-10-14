@@ -4,8 +4,8 @@ import {
   login as loginRequest,
   logout as logoutRequest,
   register as registerRequest,
-} from "../services/authApi";
-import { AuthContext } from "./authContextValue";
+} from "./authApi";
+import { AuthContext } from "./authContext";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);

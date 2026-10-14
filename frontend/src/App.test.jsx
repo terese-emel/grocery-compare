@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import App from "./App";
-import { AuthProvider } from "./context/AuthContext";
-import { getCurrentUser } from "./services/authApi";
+import { AuthProvider } from "./features/auth/AuthProvider";
+import { getCurrentUser } from "./features/auth/authApi";
 
-vi.mock("./services/authApi", () => ({
+vi.mock("./features/auth/authApi", () => ({
   getCurrentUser: vi.fn(),
   logout: vi.fn(),
 }));
@@ -17,13 +17,13 @@ function renderApp() {
   );
 }
 
-vi.mock("./services/productApi", () => ({
+vi.mock("./features/products/productApi", () => ({
   searchProducts: vi.fn(),
   deleteProduct: vi.fn(),
   updateProduct: vi.fn(),
 }));
 
-import { searchProducts } from "./services/productApi";
+import { searchProducts } from "./features/products/productApi";
 
 describe("App authentication", () => {
   it("shows a loading state while restoring the session", () => {

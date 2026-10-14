@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AddProductForm from "./AddProductForm";
-import { createProduct } from "../services/productApi";
+import { createProduct } from "./productApi";
 
-vi.mock("../services/productApi", () => ({
+vi.mock("./productApi", () => ({
   createProduct: vi.fn(),
 }));
 
