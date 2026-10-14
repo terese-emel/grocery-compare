@@ -1,6 +1,12 @@
 # Grocery Compare
 
-Grocery Compare is a full-stack application for searching grocery products, comparing prices across shops, and identifying the cheapest option.
+[![CI](https://github.com/terese-emel/grocery-compare/actions/workflows/ci.yml/badge.svg)](https://github.com/terese-emel/grocery-compare/actions/workflows/ci.yml)
+
+Grocery Compare is a full-stack application for searching grocery products, comparing prices across shops, and identifying the cheapest option. It is designed as a production-style portfolio project demonstrating secure authentication, layered API design, automated testing, Docker, CI, deployment, and monitoring.
+
+## Problem it solves
+
+Grocery prices vary between shops, making it difficult to find the best option quickly. Users can search products by name or shop, compare prices, identify the cheapest offers, and manage products they own.
 
 ## Live demo
 
@@ -22,15 +28,33 @@ The API also exposes `/live` for process liveness and `/ready` for database read
 - OpenAPI documentation with Swagger UI
 - Automated unit, API, integration, frontend, and Playwright tests
 
+## Technology stack
+
+| Layer | Technology | Purpose |
+| --- | --- | --- |
+| Frontend | React, Vite, CSS | User interface and client-side state |
+| API | Node.js, Koa | HTTP API and middleware pipeline |
+| Validation | Zod | Request body and query validation |
+| Database | MongoDB, Mongoose | Product and user persistence |
+| Authentication | JWT, HTTP-only cookies, CSRF tokens | Session security |
+| Testing | Jest, Vitest, Supertest, Playwright | Unit, API, integration, UI, and E2E testing |
+| Operations | Docker Compose, Prometheus, Grafana | Local environments and monitoring |
+| Delivery | GitHub Actions, Render | CI and hosted demo |
+
 ## Architecture
 
-```text
-React + Vite frontend
-        │ fetch with credentials and CSRF headers
-        ▼
-Node.js + Koa API
-        │ middleware → routes → controllers → services
-        └── Mongoose → MongoDB
+```mermaid
+flowchart LR
+    Browser[React + Vite frontend] -->|fetch with credentials and CSRF header| API[Node.js + Koa API]
+    API --> Middleware[Middleware: CORS, auth, validation, CSRF, rate limiting]
+    Middleware --> Routes[Routes]
+    Routes --> Controllers[Controllers]
+    Controllers --> Services[Services: business rules]
+    Services --> Models[Mongoose models]
+    Models --> Mongo[(MongoDB)]
+    API --> Metrics[/Metrics endpoint/]
+    Metrics --> Prometheus[Prometheus]
+    Prometheus --> Grafana[Grafana]
 ```
 
 The layered structure keeps HTTP concerns in controllers, business logic in services, and persistence in database models. This makes the application easier to test and extend.
@@ -48,9 +72,16 @@ grocery-compare/
 ├── frontend/
 │   └── src/                # React components, pages, services, and styles
 ├── e2e/                    # Playwright tests and Page Objects
+├── monitoring/            # Prometheus and Grafana configuration
+├── docs/screenshots/      # Portfolio screenshots
+├── .github/workflows/     # Continuous integration
 ├── docker-compose.yml
 └── README.md
 ```
+
+## Screenshot
+
+![Grocery Compare application](docs/screenshots/grocery-compare-home.png)
 
 ## Local setup
 
