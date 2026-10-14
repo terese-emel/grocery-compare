@@ -104,6 +104,20 @@ Open `http://localhost:8080`. Stop the stack with:
 docker compose down
 ```
 
+## Monitoring
+
+The Docker stack includes Prometheus and Grafana for local API monitoring.
+
+```text
+Prometheus: http://localhost:9090
+Grafana:    http://localhost:3002
+Metrics:    http://localhost:3000/metrics
+Readiness:  http://localhost:3000/ready
+Liveness:   http://localhost:3000/live
+```
+
+Prometheus scrapes backend request, response-time, error, and Node.js runtime metrics. Grafana provides the `Grocery Compare API` dashboard and server-error alert. Grafana data sources and dashboards are provisioned from `monitoring/grafana/` so the local monitoring setup can be recreated from the repository.
+
 ## API documentation
 
 With the backend running, open:
