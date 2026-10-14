@@ -91,6 +91,8 @@ paths:
         - Health
       summary: Get Prometheus metrics
       description: Available locally. Production deployments require the X-Metrics-Token header.
+      parameters:
+        - $ref: "#/components/parameters/MetricsToken"
       responses:
         "200":
           description: Prometheus metrics
@@ -439,6 +441,13 @@ components:
       in: header
       required: true
       description: CSRF token matching the csrf_token cookie
+      schema:
+        type: string
+    MetricsToken:
+      name: X-Metrics-Token
+      in: header
+      required: false
+      description: Required in production deployments.
       schema:
         type: string
 

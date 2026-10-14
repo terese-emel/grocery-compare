@@ -104,6 +104,12 @@ Open `http://localhost:8080`. Stop the stack with:
 docker compose down
 ```
 
+If a local port is already in use, override it when starting the stack:
+
+```bash
+BACKEND_PORT=3001 FRONTEND_PORT=8081 GRAFANA_PORT=3003 docker compose up --build
+```
+
 ## Monitoring
 
 The Docker stack includes Prometheus and Grafana for local API monitoring.
@@ -157,3 +163,10 @@ npm test
 ```
 
 Playwright uses Page Object Models and covers authentication, product search, product creation, validation, and ownership behavior. GitHub Actions runs backend, frontend, OpenAPI, coverage, and Playwright checks on repository changes.
+
+The default Playwright suite uses mocked API responses and runs in CI. The real Docker-stack flow is run locally after starting the stack:
+
+```bash
+cd e2e
+npm run test:real
+```
