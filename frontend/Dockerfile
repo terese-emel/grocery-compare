@@ -17,9 +17,6 @@ FROM nginx:1.29-bookworm
 
 RUN apt-get update && apt-get upgrade -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# Apply the latest security fixes to the runtime image before copying assets.
-RUN apk upgrade --no-cache
-
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
