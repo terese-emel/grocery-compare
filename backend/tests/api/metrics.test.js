@@ -12,16 +12,16 @@ describe("Metrics API", () => {
   });
 
   test("records the route and status code for completed requests", async () => {
-    await request(app.callback()).get("/metrics");
+    await request(app.callback()).get("/live");
 
     const response = await request(app.callback()).get("/metrics");
 
     expect(response.status).toBe(200);
     expect(response.text).toMatch(
-      /http_requests_total\{[^}]*route="\/metrics"[^}]*status_code="200"[^}]*\}/,
+      /http_requests_total\{[^}]*route="\/live"[^}]*status_code="200"[^}]*\}/,
     );
     expect(response.text).toMatch(
-      /http_request_duration_seconds_count\{[^}]*route="\/metrics"[^}]*status_code="200"[^}]*\}/,
+      /http_request_duration_seconds_count\{[^}]*route="\/live"[^}]*status_code="200"[^}]*\}/,
     );
   });
 });

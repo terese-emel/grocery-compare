@@ -16,14 +16,16 @@ async function metricsMiddleware(ctx, next) {
     const durationInSeconds =
       Number(process.hrtime.bigint() - startTime) / 1_000_000_000;
 
-    const labels = {
-      method: ctx.method,
-      route: getRouteLabel(ctx),
-      status_code: String(ctx.status),
-    };
+    if (ctx.path !== "/metrics") {
+      const labels = {
+        method: ctx.method,
+        route: getRouteLabel(ctx),
+        status_code: String(ctx.status),
+      };
 
-    httpRequestsTotal.inc(labels);
-    httpRequestDuration.observe(labels, durationInSeconds);
+      httpRequestsTotal.inc(labels);
+      httpRequestDuration.observe(labels, durationInSeconds);
+    }
   }
 }
 

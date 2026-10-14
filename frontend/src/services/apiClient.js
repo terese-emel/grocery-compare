@@ -25,17 +25,22 @@ export async function apiRequest(path, options = {}) {
   });
   captureCsrfToken(response);
 
-  const data = await response.json();
+  const contentType = response.headers?.get?.("content-type") || "";
+  const data =
+    response.status !== 204 &&
+    (contentType.includes("application/json") || !response.headers)
+      ? await response.json()
+      : null;
 
   if (response.status === 401) {
     void logout().catch(() => {});
   }
 
   if (!response.ok) {
-    throw new ApiError(data.error?.message || data.message || "Request failed", {
-      code: data.error?.code,
+    throw new ApiError(data?.error?.message || data?.message || "Request failed", {
+      code: data?.error?.code,
       requestId:
-        data.error?.requestId || response.headers?.get?.("X-Request-Id"),
+        data?.error?.requestId || response.headers?.get?.("X-Request-Id"),
       status: response.status,
     });
   }

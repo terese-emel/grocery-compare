@@ -156,4 +156,4 @@ npx playwright install chromium
 npm test
 ```
 
-Playwright uses Page Object Models and covers authentication, product search, product creation, validation, and ownership behavior. GitHub Actions runs the automated test, OpenAPI, Docker, and security checks on repository changes.
+Playwright uses Page Object Models and covers authentication, product search, product creation, validation, and ownership behavior. GitHub Actions runs backend, frontend, OpenAPI, coverage, and Playwright checks on repository changes.

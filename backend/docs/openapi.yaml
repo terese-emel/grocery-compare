@@ -35,6 +35,71 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
+        "503":
+          description: API is running but database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /live:
+    get:
+      security: []
+      operationId: getLiveness
+      tags:
+        - Health
+      summary: Check process liveness
+      responses:
+        "200":
+          description: API process is running
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /ready:
+    get:
+      security: []
+      operationId: getReadiness
+      tags:
+        - Health
+      summary: Check database readiness
+      responses:
+        "200":
+          description: API and database are ready
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+        "503":
+          description: Database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /metrics:
+    get:
+      security: []
+      operationId: getMetrics
+      tags:
+        - Health
+      summary: Get Prometheus metrics
+      description: Available locally. Production deployments require the X-Metrics-Token header.
+      responses:
+        "200":
+          description: Prometheus metrics
+          content:
+            text/plain:
+              schema:
+                type: string
+        "404":
+          description: Metrics are unavailable without valid production credentials
 
   /auth/register:
     post:
