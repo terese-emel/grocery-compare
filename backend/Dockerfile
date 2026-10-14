@@ -1,6 +1,4 @@
-FROM node:22-alpine
-
-RUN apk upgrade --no-cache
+FROM node:22-bookworm-slim
 
 WORKDIR /app
 
