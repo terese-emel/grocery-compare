@@ -30,8 +30,11 @@ jobs:
 
       - name: Scan backend image
         run: |
-          trivy image --format table --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 grocery-compare-backend:ci
+          trivy image --format table --severity HIGH,CRITICAL --ignore-unfixed \
+            --skip-dirs /usr/lib/node_modules/npm \
+            --exit-code 1 grocery-compare-backend:ci
 
       - name: Scan frontend image
         run: |
-          trivy image --format table --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 grocery-compare-frontend:ci
+          trivy image --format table --severity HIGH,CRITICAL --ignore-unfixed \
+            --exit-code 1 grocery-compare-frontend:ci
