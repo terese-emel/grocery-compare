@@ -20,7 +20,6 @@ The API also exposes `/live` for process liveness and `/ready` for database read
 - Product creation, price updates, and deletion with ownership authorization
 - Zod validation for request bodies and query parameters
 - OpenAPI documentation with Swagger UI
-- Optional PostgreSQL analytics for product search events
 - Automated unit, API, integration, frontend, and Playwright tests
 
 ## Architecture
@@ -31,8 +30,7 @@ React + Vite frontend
         ▼
 Node.js + Koa API
         │ middleware → routes → controllers → services
-        ├── Mongoose → MongoDB
-        └── pg      → PostgreSQL analytics (optional)
+        └── Mongoose → MongoDB
 ```
 
 The layered structure keeps HTTP concerns in controllers, business logic in services, and persistence in database models. This makes the application easier to test and extend.
