@@ -10,7 +10,7 @@ const SearchForm = ({
   clearSearch,
 }) => {
   return (
-    <form onSubmit={handleSubmit} className={styles.searchForm}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <label htmlFor="product">Product name</label>
 
       <input

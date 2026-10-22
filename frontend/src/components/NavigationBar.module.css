@@ -1,0 +1,52 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  padding: 16px 24px;
+  border-bottom: 1px solid #d5dfd6;
+  background: #ffffff;
+}
+
+.brand {
+  color: #1f7139;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.links a {
+  color: #17221b;
+  text-decoration: none;
+}
+
+.links a:hover {
+  color: #1f7139;
+}
+
+.user {
+  color: #68736b;
+  font-size: 0.9rem;
+}
+
+.links button {
+  min-height: 40px;
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .links {
+    flex-wrap: wrap;
+  }
+}

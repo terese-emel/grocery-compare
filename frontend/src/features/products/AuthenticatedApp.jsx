@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import SearchForm from "./SearchForm";
-import ProductList from "./ProductList";
 import ErrorMessage from "../../components/ErrorMessage";
+import NavigationBar from "../../components/NavigationBar";
 import AddProductForm from "./AddProductForm";
-import {
-  searchProducts,
-  deleteProduct,
-  updateProduct,
-} from "./productApi";
+import { deleteProduct, searchProducts, updateProduct } from "./productApi";
+import ProductList from "./ProductList";
+import SearchForm from "./SearchForm";
+import styles from "./AuthenticatedApp.module.css";
 
 function AuthenticatedApp({ user, logout }) {
   const [productName, setProductName] = useState("");
@@ -127,32 +125,25 @@ function AuthenticatedApp({ user, logout }) {
     }
   }
 
-  function handleLogout() {
-    logout();
-    setProducts([]);
-    setError("");
-  }
-
   return (
     <main>
-      <h1>Grocery Compare</h1>
-      <p>Find the cheapest grocery products.</p>
-      <p>Signed in as {user.email}</p>
-      <button className="button-secondary" type="button" onClick={handleLogout}>
-        Logout
-      </button>
+      <NavigationBar user={user} onLogout={logout} />
+      <section id="add-product">
+        <AddProductForm onCreated={handleCreated} />
+      </section>
+      <section id="search">
+        <SearchForm
+          productName={productName}
+          setProductName={setProductName}
+          shopName={shopName}
+          setShopName={setShopName}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          clearSearch={clearSearch}
+        />
 
-      <SearchForm
-        productName={productName}
-        setProductName={setProductName}
-        shopName={shopName}
-        setShopName={setShopName}
-        handleSubmit={handleSubmit}
-        loading={loading}
-        clearSearch={clearSearch}
-      />
-
-      <ErrorMessage message={error} />
+        <ErrorMessage message={error} />
+      </section>
 
       <ProductList
         products={products}
@@ -162,9 +153,9 @@ function AuthenticatedApp({ user, logout }) {
       />
 
       {pagination && pagination.pages > 1 && (
-        <nav className="pagination-controls" aria-label="Product pages">
+        <nav className={styles.paginationControls} aria-label="Product pages">
           <button
-            className="button-secondary"
+            className={styles.secondaryButton}
             type="button"
             onClick={() => loadProducts(currentPage - 1)}
             disabled={loading || currentPage === 1}
@@ -175,7 +166,7 @@ function AuthenticatedApp({ user, logout }) {
             Page {pagination.page} of {pagination.pages}
           </span>
           <button
-            className="button-secondary"
+            className={styles.secondaryButton}
             type="button"
             onClick={() => loadProducts(currentPage + 1)}
             disabled={loading || currentPage === pagination.pages}
@@ -184,8 +175,6 @@ function AuthenticatedApp({ user, logout }) {
           </button>
         </nav>
       )}
-
-      <AddProductForm onCreated={handleCreated} />
     </main>
   );
 }

@@ -1,26 +1,37 @@
-.addProductForm {
+.container {
   display: grid;
   gap: 16px;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  text-align: center;
 }
 
-.addProductForm form {
+.form {
   display: grid;
   grid-template-columns: 140px minmax(0, 1fr);
   gap: 12px;
   align-items: center;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
-.addProductForm input {
-  width: 100%;
-}
-
-.addProductForm button,
-.addProductForm p {
+.form button,
+.form p {
   grid-column: 1 / -1;
 }
 
+.secondaryButton {
+  color: var(--color-primary);
+  background: transparent;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  color: white;
+  background: var(--color-primary);
+}
+
 @media (max-width: 600px) {
-  .addProductForm form {
+  .form {
     grid-template-columns: 1fr;
   }
 }

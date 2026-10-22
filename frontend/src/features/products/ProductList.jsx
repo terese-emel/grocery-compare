@@ -1,4 +1,5 @@
 import { useState } from "react";
+import styles from "./ProductList.module.css";
 
 function getId(value) {
   if (!value) {
@@ -42,7 +43,7 @@ function ProductList({ products, onDelete, onUpdate, loggedInUser }) {
   }
 
   return (
-    <section>
+    <section className={styles.productList}>
       <h2>Matching products</h2>
 
       {products.map((product) => {
@@ -52,16 +53,17 @@ function ProductList({ products, onDelete, onUpdate, loggedInUser }) {
         const canManage = loggedInUserId === productOwnerId;
 
         return (
-          <div
-            className={`product-card ${isCheapest ? "cheapest" : ""}`}
+          <article
+            className={`${styles.productCard} ${isCheapest ? styles.cheapest : ""}`}
             key={product._id}
           >
-            <span className="product-name">{product.name}</span>
-            <span>{product.shop}</span>
+            <span className={styles.productName}>{product.name}</span>
+            <span className={styles.shopName}>{product.shop}</span>
 
             {isEditing && canManage ? (
               <>
                 <input
+                  className={styles.priceInput}
                   type="number"
                   value={editedProductPrice}
                   step="0.01"
@@ -69,31 +71,34 @@ function ProductList({ products, onDelete, onUpdate, loggedInUser }) {
                     setEditedProductPrice(event.target.value)
                   }
                 />
+                <div className={styles.actions}>
+                  <button
+                    type="button"
+                    onClick={() => saveEditedPrice(product._id)}
+                    disabled={savingProductId === product._id}
+                  >
+                    {savingProductId === product._id ? "Saving..." : "Save"}
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => saveEditedPrice(product._id)}
-                  disabled={savingProductId === product._id}
-                >
-                  {savingProductId === product._id ? "Saving..." : "Save"}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={cancelEditing}
-                  disabled={savingProductId === product._id}
-                >
-                  Cancel
-                </button>
+                  <button
+                    type="button"
+                    onClick={cancelEditing}
+                    disabled={savingProductId === product._id}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </>
             ) : (
               <>
-                <strong>{product.price} kr</strong>
+                <strong className={styles.productPrice}>
+                  {product.price} kr
+                </strong>
 
                 {isCheapest && <em>Cheapest</em>}
 
                 {canManage && (
-                  <>
+                  <div className={styles.actions}>
                     <button
                       type="button"
                       onClick={() => startEditing(product._id, product.price)}
@@ -104,11 +109,11 @@ function ProductList({ products, onDelete, onUpdate, loggedInUser }) {
                     <button type="button" onClick={() => onDelete(product._id)}>
                       Delete
                     </button>
-                  </>
+                  </div>
                 )}
               </>
             )}
-          </div>
+          </article>
         );
       })}
     </section>

@@ -1,25 +1,36 @@
-.searchForm {
+.container {
+  display: grid;
+  gap: 16px;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.form {
   display: grid;
   grid-template-columns: 140px minmax(0, 1fr);
   gap: 12px;
   align-items: center;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
-.searchForm input {
-  width: 100%;
-}
-
-.searchForm button {
+.form button,
+.form p {
   grid-column: 1 / -1;
 }
 
 .secondaryButton {
-  color: #1f7139;
-  background-color: transparent;
+  color: var(--color-primary);
+  background: transparent;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  color: white;
+  background: var(--color-primary);
 }
 
 @media (max-width: 600px) {
-  .searchForm {
+  .form {
     grid-template-columns: 1fr;
   }
 }

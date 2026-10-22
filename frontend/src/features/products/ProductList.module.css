@@ -1,0 +1,78 @@
+.productList {
+  margin-top: 32px;
+}
+
+.productCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 720px;
+  margin: 12px auto;
+  padding: 16px;
+  border: 1px solid var(--color-border, #b8c5b9);
+  border-radius: var(--radius-md, 6px);
+  background: var(--color-surface, #ffffff);
+  text-align: left;
+}
+
+.productCard:first-of-type {
+  margin-top: 0;
+}
+
+.productCard em {
+  color: var(--color-primary, #1f7139);
+  font-weight: 700;
+}
+
+.cheapest {
+  border-color: var(--color-primary, #1f7139);
+  box-shadow: 0 2px 8px rgb(31 113 57 / 12%);
+}
+
+.priceInput {
+  max-width: 120px;
+}
+
+.productPrice {
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.actions button {
+  min-height: 40px;
+  padding: 8px 12px;
+}
+
+@media (max-width: 600px) {
+  .productCard {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .priceInput {
+    max-width: none;
+  }
+
+  .actions {
+    margin-left: 0;
+  }
+
+  .actions button {
+    flex: 1;
+  }
+}
+
+.productName {
+  flex: 1;
+}
+
+.shopName {
+  flex: 1;
+}

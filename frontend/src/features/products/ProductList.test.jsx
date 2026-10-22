@@ -52,7 +52,7 @@ describe("ProductList ownership controls", () => {
   });
 
   it("shows the product name on every result card", () => {
-    const { container } = render(
+    render(
       <ProductList
         products={[
           { ...products[0], name: "Milk" },
@@ -64,7 +64,7 @@ describe("ProductList ownership controls", () => {
       />,
     );
 
-    expect(container.querySelectorAll(".product-name")).toHaveLength(2);
+    expect(screen.getByText("Milk", { exact: true })).toBeInTheDocument();
     expect(screen.getByText("Oat Milk")).toBeInTheDocument();
   });
 

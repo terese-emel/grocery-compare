@@ -1,0 +1,17 @@
+.secondaryButton {
+  color: var(--color-primary);
+  background: transparent;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  color: white;
+  background: var(--color-primary);
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px 0;
+}

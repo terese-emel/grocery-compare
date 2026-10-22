@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ErrorMessage from "../../components/ErrorMessage";
-import { createProduct } from "./productApi";
 import styles from "./AddProductForm.module.css";
+import { createProduct } from "./productApi";
 
 const AddProductForm = ({ onCreated }) => {
   const [productName, setProductName] = useState("");
@@ -60,9 +60,9 @@ const AddProductForm = ({ onCreated }) => {
   };
 
   return (
-    <section className={styles.addProductForm}>
+    <section className={styles.container}>
       <h2>Add Product</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <label htmlFor="add-product-name">Product name</label>
 
         <input
@@ -105,7 +105,7 @@ const AddProductForm = ({ onCreated }) => {
           {saving ? "Adding..." : "Add Product"}
         </button>
         <button
-          className="button-secondary"
+          className={styles.secondaryButton}
           type="button"
           onClick={resetForm}
           disabled={saving}
