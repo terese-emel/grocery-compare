@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agentic Full-Stack Development"
+  short_description: "Plan, build, test, and review full-stack changes"
+  default_prompt: "Use $agentic-fullstack-development to plan, implement, test, and review this full-stack requirement."

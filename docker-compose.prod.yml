@@ -1,0 +1,15 @@
+services:
+  backend:
+    environment:
+      NODE_ENV: production
+      FRONTEND_URL: ${FRONTEND_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      MONGODB_URI: ${MONGODB_URI}
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
