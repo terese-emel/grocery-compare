@@ -139,6 +139,20 @@ Open `http://localhost:8080`. Stop the stack with:
 docker compose down
 ```
 
+Convenience scripts are available from the repository root:
+
+```bash
+./scripts/dev.sh   # Start the development stack
+./scripts/prod.sh  # Build and start the production-style stack
+./scripts/stop.sh  # Stop the Docker stack
+```
+
+If the scripts are not executable on a new checkout, run:
+
+```bash
+chmod +x scripts/*.sh
+```
+
 If a local port is already in use, override it when starting the stack:
 
 ```bash
