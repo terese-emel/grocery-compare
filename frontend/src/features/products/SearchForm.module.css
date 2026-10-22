@@ -1,0 +1,25 @@
+.searchForm {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.searchForm input {
+  width: 100%;
+}
+
+.searchForm button {
+  grid-column: 1 / -1;
+}
+
+.secondaryButton {
+  color: #1f7139;
+  background-color: transparent;
+}
+
+@media (max-width: 600px) {
+  .searchForm {
+    grid-template-columns: 1fr;
+  }
+}

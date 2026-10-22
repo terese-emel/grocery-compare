@@ -1,0 +1,26 @@
+.addProductForm {
+  display: grid;
+  gap: 16px;
+}
+
+.addProductForm form {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.addProductForm input {
+  width: 100%;
+}
+
+.addProductForm button,
+.addProductForm p {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  .addProductForm form {
+    grid-template-columns: 1fr;
+  }
+}

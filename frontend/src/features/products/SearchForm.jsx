@@ -1,3 +1,5 @@
+import styles from "./SearchForm.module.css";
+
 const SearchForm = ({
   productName,
   setProductName,
@@ -8,7 +10,7 @@ const SearchForm = ({
   clearSearch,
 }) => {
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={styles.searchForm}>
       <label htmlFor="product">Product name</label>
 
       <input
@@ -32,7 +34,7 @@ const SearchForm = ({
         {loading ? "Searching..." : "Search"}
       </button>
       <button
-        className="button-secondary"
+        className={styles.secondaryButton}
         type="button"
         onClick={clearSearch}
         disabled={loading}

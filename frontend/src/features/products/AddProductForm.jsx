@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { createProduct } from "./productApi";
 import ErrorMessage from "../../components/ErrorMessage";
+import { createProduct } from "./productApi";
+import styles from "./AddProductForm.module.css";
 
 const AddProductForm = ({ onCreated }) => {
   const [productName, setProductName] = useState("");
@@ -59,7 +60,7 @@ const AddProductForm = ({ onCreated }) => {
   };
 
   return (
-    <section>
+    <section className={styles.addProductForm}>
       <h2>Add Product</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="add-product-name">Product name</label>
