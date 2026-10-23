@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import ErrorMessage from "../../components/ErrorMessage";
 import NavigationBar from "../../components/NavigationBar";
 import AddProductForm from "./AddProductForm";
+import styles from "./AuthenticatedApp.module.css";
 import { deleteProduct, searchProducts, updateProduct } from "./productApi";
 import ProductList from "./ProductList";
 import SearchForm from "./SearchForm";
-import styles from "./AuthenticatedApp.module.css";
 
 function AuthenticatedApp({ user, logout }) {
   const [productName, setProductName] = useState("");

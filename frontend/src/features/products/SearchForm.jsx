@@ -10,38 +10,42 @@ const SearchForm = ({
   clearSearch,
 }) => {
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <label htmlFor="product">Product name</label>
+    <section className={styles.container}>
+      <h2>Search Products</h2>
 
-      <input
-        id="product"
-        type="text"
-        placeholder="Try milk"
-        value={productName}
-        onChange={(event) => setProductName(event.target.value)}
-      />
-      <label htmlFor="shop">Shop name</label>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <label htmlFor="product">Product name</label>
 
-      <input
-        id="shop"
-        type="text"
-        placeholder="Try Coop"
-        value={shopName}
-        onChange={(event) => setShopName(event.target.value)}
-      />
+        <input
+          id="product"
+          type="text"
+          placeholder="Try milk"
+          value={productName}
+          onChange={(event) => setProductName(event.target.value)}
+        />
+        <label htmlFor="shop">Shop name</label>
 
-      <button type="submit" disabled={loading}>
-        {loading ? "Searching..." : "Search"}
-      </button>
-      <button
-        className={styles.secondaryButton}
-        type="button"
-        onClick={clearSearch}
-        disabled={loading}
-      >
-        Clear
-      </button>
-    </form>
+        <input
+          id="shop"
+          type="text"
+          placeholder="Try Coop"
+          value={shopName}
+          onChange={(event) => setShopName(event.target.value)}
+        />
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Searching..." : "Search"}
+        </button>
+        <button
+          className={styles.secondaryButton}
+          type="button"
+          onClick={clearSearch}
+          disabled={loading}
+        >
+          Clear
+        </button>
+      </form>
+    </section>
   );
 };
 

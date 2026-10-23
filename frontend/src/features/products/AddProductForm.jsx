@@ -9,6 +9,7 @@ const AddProductForm = ({ onCreated }) => {
   const [price, setPrice] = useState("");
   const [unit, setUnit] = useState("");
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   const resetForm = () => {
@@ -16,13 +17,13 @@ const AddProductForm = ({ onCreated }) => {
     setShopName("");
     setPrice("");
     setUnit("");
-    setMessage("");
+    setError("");
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setMessage("");
+    setError("");
 
     if (
       productName.trim() === "" ||
@@ -30,7 +31,7 @@ const AddProductForm = ({ onCreated }) => {
       price.trim() === "" ||
       unit.trim() === ""
     ) {
-      setMessage("Please fill in all fields.");
+      setError("Please fill in all fields.");
       return;
     }
 
@@ -53,7 +54,7 @@ const AddProductForm = ({ onCreated }) => {
       setPrice("");
       setUnit("");
     } catch (error) {
-      setMessage(error);
+      setError(error);
     } finally {
       setSaving(false);
     }
@@ -113,11 +114,8 @@ const AddProductForm = ({ onCreated }) => {
           Reset
         </button>
       </form>
-      {typeof message === "object" ? (
-        <ErrorMessage message={message} />
-      ) : (
-        message && <p>{message}</p>
-      )}
+      {error && <ErrorMessage message={error} />}
+      {message && <alert className={styles.sucessMessage}>{message}</alert>}
     </section>
   );
 };
